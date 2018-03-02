@@ -31559,10 +31559,12 @@ module.exports = function(context) {
             if (boundingPolygon) {
               // Convert array of [lon, lat] points from the GeoJSON to
               // array of {'lat': lat, 'lon': lon} objects.
-              boundingLatLngs = boundingPolygon.map(point => ({
-                lat: point[1],
-                lon: point[0]
-              }));
+                boundingLatLngs = boundingPolygon.map(function (point) {
+                  return {
+                    lat: point[1],
+                    lon: point[0]
+                  };
+                });
             } else {
               boundingLatLngs = this._boundsToLatLngs(latLngBounds);
             }
