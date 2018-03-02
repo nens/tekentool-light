@@ -31052,26 +31052,32 @@ module.exports = function fileBar(context) {
     var exportFormats = [{
         title: 'GeoJSON',
         action: downloadGeoJSON
-    }, {
-        title: 'TopoJSON',
-        action: downloadTopo
-    }, {
+    },
+
+    // {
+    //     title: 'TopoJSON',
+    //     action: downloadTopo
+    // }
+    {
         title: 'CSV',
         action: downloadDSV
     }, {
         title: 'KML',
         action: downloadKML
-    }, {
-        title: 'WKT',
-        action: downloadWKT
-    }];
-
-    if (shpSupport) {
-        exportFormats.push({
-            title: 'Shapefile',
-            action: downloadShp
-        });
     }
+    // , {
+    //     title: 'WKT',
+    //     action: downloadWKT
+    // }
+    ];
+
+    // Shapefile export is broken!
+    // if (shpSupport) {
+    //     exportFormats.push({
+    //         title: 'Shapefile',
+    //         action: downloadShp
+    //     });
+    // }
 
     function bar(selection) {
 
@@ -31255,6 +31261,8 @@ module.exports = function fileBar(context) {
 
         var name = selection.append('div')
             .attr('class', 'name');
+
+        name.text(window.mapTitle);
 
         if (mapboxAPI || githubAPI) {
             var filetype = name.append('a')
@@ -31716,6 +31724,7 @@ module.exports = function(context) {
         var obj = {};
 
         try {
+            window.mapTitle = _map[0].name;
             _map[0].mapLayers.forEach(function(layer) {
                 let wmsUrl = layer.url;
                 if (

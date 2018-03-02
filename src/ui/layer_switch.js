@@ -102,6 +102,7 @@ module.exports = function(context) {
         var obj = {};
 
         try {
+            window.mapTitle = _map[0].name;
             _map[0].mapLayers.forEach(function(layer) {
                 let wmsUrl = layer.url;
                 if (
