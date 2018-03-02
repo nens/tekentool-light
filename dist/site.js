@@ -31613,27 +31613,29 @@ function flash(selection, txt) {
 
 },{"./message":204}],202:[function(require,module,exports){
 module.exports = function(context) {
-
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) return null;
-        if (!results[2]) return '';
+        if (!results[2]) return "";
         return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
 
     return function(selection) {
         var layers;
         var data = window.data;
+        if (!data) {
+            return false;
+        }
         var mapId = getParameterByName("mapid");
         var _map = data.maps.filter(function(m) {
             if (m.id === parseInt(mapId, 10)) {
                 return m;
             }
             return false;
-        });        
+        });
 
         var obj = {};
 
@@ -31658,8 +31660,7 @@ module.exports = function(context) {
                         styles: layer.styles,
                         transparent: layer.transparent
                     });
-                } 
-                else {
+                } else {
                     obj[layer.name] = L.tileLayer.wms(wmsUrl, {
                         layers: layer.layerName,
                         opacity: layer.opacity,
@@ -31669,25 +31670,30 @@ module.exports = function(context) {
                         zindex: layer.zindex,
                         styles: layer.styles,
                         transparent: layer.transparent
-                    });                    
+                    });
                 }
             });
         } catch (e) {
             console.log(e);
         }
 
-
         // Add labels layer
         obj["Labels"] = L.tileLayer(
-          "https://cartodb-basemaps-d.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png"
-            );
+            "https://cartodb-basemaps-d.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}.png"
+        );
 
-        L.control.layers({
-            'Standaard': L.tileLayer("https://cartodb-basemaps-d.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png").addTo(context.map),
-            'Topo': L.mapbox.tileLayer('mapbox.streets'),
-            'Light': L.mapbox.tileLayer('mapbox.light')
-        }, obj).addTo(context.map);
-
+        L.control
+            .layers(
+                {
+                    Standaard: L.tileLayer(
+                        "https://cartodb-basemaps-d.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
+                    ).addTo(context.map),
+                    Topo: L.mapbox.tileLayer("mapbox.streets"),
+                    Light: L.mapbox.tileLayer("mapbox.light")
+                },
+                obj
+            )
+            .addTo(context.map);
 
         context.map.on("zoomend", function(e) {
             // console.log(e);
@@ -31735,16 +31741,12 @@ module.exports = function(context) {
 
                         var splitStyles = styles.split(":");
                         layer.setParams({
-                            styles: splitStyles[0] + ":" + json[0] + ":" + json[1]
+                            styles:
+                                splitStyles[0] + ":" + json[0] + ":" + json[1]
                         });
                     });
             });
         });
-
-
-
-
-
     };
 };
 

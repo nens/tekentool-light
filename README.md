@@ -5,16 +5,24 @@ Klimaatatlas - Tekentool - Light
 Development
 -----------
 
-Install 'n'. (`$ npm install -g n`)
-Switch to node.js 4:
+Install 'n' (or nvm if you wish):
+
+```bash
+$ npm install -g n
+```
+
+Switch to node.js 4.x:
 
 ```bash
 $ sudo n 4.0.0
 ```
 
-Run `$ npm install`
+```bash
+$ npm install
+$ make
+```
 
-Run `$ make`
+Run `make` everytime you change the code and wish to see the updates.
 
 
 
@@ -22,17 +30,17 @@ Run `$ make`
 TODO
 ----
 
-- ALMOST Use setParams() and ajax call to raster server to rescale on each moveend
-
-- Bump leaflet draw from 0.2.3 to 0.4.14
-
 - Fix shp-write IE bug: https://github.com/mapbox/shp-write/pull/50/files
 
 - Enable masking (needed!!!)
 
-- Help button (and new help movie)
+- ???? Help button (and new help movie)
 
-- Auto-numbering of features (really necessary in first version?)
+- WOULD BE NICE Auto-numbering of features (really necessary in first version?)
+
+- COMPLICATED Bump leaflet draw from 0.2.3 to 0.4.14
+
+- DONE BUT UNTESTED Use setParams() and ajax call to raster server to rescale on each moveend
 
 - DONE Make multiple layers possible
 

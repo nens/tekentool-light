@@ -12,53 +12,31 @@
       <meta name="viewport" content="initial-scale=1,maximum-scale=1">
       <meta http-equiv='X-UA-Compatible' content='IE=Edge'>
       <style>
-        body {
-            background:#eee;
-            margin:0;
-            color:#222;
-            font:normal 14px/20px 'Helvetica Neue';
-        }
-        h2 {
-            margin:0;
-        }
-        .layer-switch {
-            top:10px;
-            left:10px;
-        }
-        .pad1 {
-            padding:10px;
-        }
-        .fillE {
-            background:#eee;
-        }
-        p {
-            margin:0;
-        }
-        .bottom {
-            position:absolute;
-            bottom:0;
-            left:0;
-            right:0;
-        }
-        .geojsonio .map {
-            position:absolute;
-            top:0;
-            right:0;
-            bottom:0;
-            left:0;
-        }
-        .deemphasize {
-            color:#777;
-        }
+      html, body {
+        height: 100%;
+      }
+      body {
+        background-color: #eee;
+        margin: 20px;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+      .warning {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+      }
       </style>
   </head>
   <body>
-    <div class='geojsonio'></div>
-    <div class='pad1 fillE bottom'>
-        <p>tekentool mobile <span class='deemphasize'>(read-only)</span></p>
+    <div class="warning">
+        <h1>Mobiel toestel niet ondersteund</h1> 
+        <p>De Klimaatatlas tekentool is ontworpen voor gebruik op desktop/laptop computers.</p>
     </div>
-    <script src='lib/mapbox.js/latest/mapbox.js'></script>
-    <script src='dist/lib.js'></script>
-    <script src='dist/site.mobile.js'></script>
 </body>
 </html>
