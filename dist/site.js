@@ -31547,7 +31547,7 @@ module.exports = function fileBar(context) {
         var meta = context.data.get('meta');
         saveAs(new Blob([content], {
             type: 'text/plain;charset=utf-8'
-        }), (meta && meta.name) || 'map.geojson');
+        }), (window.mapTitle + ".geojson") || 'map.geojson');
     }
 
     function downloadDSV() {
