@@ -1,4 +1,7 @@
+
 module.exports = function(context) {
+
+
     function getParameterByName(name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, "\\$&");
@@ -15,6 +18,77 @@ module.exports = function(context) {
         if (!data) {
             return false;
         }
+
+
+
+
+        L.Mask = L.Rectangle.extend({
+          options: {
+            stroke: false,
+            color: "#333",
+            fillOpacity: 0.99,
+            clickable: false,
+            outerBounds: new L.LatLngBounds([-90, -360], [90, 360])
+          },
+
+          initialize: function(latLngBounds, boundingPolygon, options) {
+            var boundingLatLngs;
+            if (boundingPolygon) {
+              // Convert array of [lon, lat] points from the GeoJSON to
+              // array of {'lat': lat, 'lon': lon} objects.
+              boundingLatLngs = boundingPolygon.map(point => ({
+                lat: point[1],
+                lon: point[0]
+              }));
+            } else {
+              boundingLatLngs = this._boundsToLatLngs(latLngBounds);
+            }
+
+            // The maskbound are an outer polygon (the whole world) with a hole in
+            // it (the area the user is allowed to see clearly), given by boundingLatLngs.
+            var maskBounds = [
+              this._boundsToLatLngs(this.options.outerBounds),
+              boundingLatLngs
+            ];
+
+            L.Polygon.prototype.initialize.call(this, maskBounds, options);
+          },
+
+          getLatLngs: function() {
+            return this._holes[0];
+          },
+
+          setLatLngs: function(latlngs) {
+            this._holes[0] = this._convertLatLngs(latlngs);
+            return this.redraw();
+          },
+
+          setBounds: function(latLngBounds) {
+            this._holes[0] = this._boundsToLatLngs(latLngBounds);
+            return this.redraw();
+          }
+        });
+
+        L.mask = function(latLngBounds, options) {
+          return new L.Mask(latLngBounds, options);
+        };
+
+        if (data.topleft && data.bottomright) {
+            var tl = data.topleft.split(",");
+            var br = data.bottomright.split(",");
+            L.mask(
+                [[Number(tl[0]), Number(tl[1])], [Number(br[0]), Number(br[1])]],
+                data.boundingPolygon
+            ).addTo(context.map);
+        } else if (data.boundingPolygon) {
+            // If there is only a polygon, ignore the bounds
+            L.mask(null, data.boundingPolygon).addTo(
+                context.map
+            );
+        }
+
+
+
         var mapId = getParameterByName("mapid");
         var _map = data.maps.filter(function(m) {
             if (m.id === parseInt(mapId, 10)) {
