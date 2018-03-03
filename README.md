@@ -30,17 +30,13 @@ Run `make` everytime you change the code and wish to see the updates.
 TODO
 ----
 
-- Disable mask console shortcut (disableMask())
+- On load, zoom to center of configured map
 
-- Add instruction video
+- NOT DOING, SWITCHED TO GEOJSON Fix shp-write IE bug: https://github.com/mapbox/shp-write/pull/50/files
 
-- Fix shp-write IE bug: https://github.com/mapbox/shp-write/pull/50/files
+- DONE Enable masking (needed!!!)
 
-- Enable masking (needed!!!)
-
-- ???? Help button (and new help movie)
-
-- WOULD BE NICE Auto-numbering of features (really necessary in first version?)
+- DONE Auto-numbering of features
 
 - COMPLICATED Bump leaflet draw from 0.2.3 to 0.4.14
 
@@ -49,6 +45,10 @@ TODO
 - DONE Make multiple layers possible
 
 - DONE Enlarge layer selection mechanism
+
+- DONE Add instruction video
+
+- DONE Disable mask console shortcut (disableMask())
 
 - NOT DOING - UP TO USER Allow naming of export
 

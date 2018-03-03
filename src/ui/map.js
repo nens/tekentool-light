@@ -117,6 +117,10 @@ module.exports = function(context, readonly) {
         var features = [];
         layer.eachLayer(collect);
         function collect(l) { if ('toGeoJSON' in l) features.push(l.toGeoJSON()); }
+        features = features.map(function(feature, i) {
+            feature.properties["Nr"] = i;
+            return feature;
+        });
         return {
             type: 'FeatureCollection',
             features: features
@@ -148,6 +152,7 @@ function bindPopup(l) {
     var props = JSON.parse(JSON.stringify(l.toGeoJSON().properties)),
         table = '',
         info = '';
+
 
     var properties = {
         "Nr": "",

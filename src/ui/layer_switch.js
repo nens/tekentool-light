@@ -174,10 +174,8 @@ module.exports = function(context) {
                 }
             });
 
-            // console.log("------->", layers);
 
             layers.forEach(function(layer) {
-                // console.log("Processing layer", layer);
                 // Rescale layer to new extent
                 var bounds = context.map.getBounds();
                 var boundsCommaSeparated =
@@ -190,6 +188,7 @@ module.exports = function(context) {
                     bounds._southWest.lat;
                 var layers = layer.wmsParams.layers;
                 var styles = layer.wmsParams.styles;
+                // TODO: Replace Fetch with regular xmlhttpreq
                 fetch(
                     "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
                         layers +
@@ -198,11 +197,9 @@ module.exports = function(context) {
                         "&width=256&height=256"
                 )
                     .then(function(data) {
-                        // console.log(data);
                         return data.json();
                     })
                     .then(function(json) {
-                        // console.log(json, layer);
 
                         var splitStyles = styles.split(":");
                         layer.setParams({

@@ -30164,6 +30164,7 @@ module.exports = function(context) {
                         losslessNumber(d3.select(this).selectAll('input')[0][1].value);
                 }
             }
+            // obj['Nr'] = window.api.data.all().map.features.length;
             e.popup._source.feature.properties = obj;
             context.data.set({map: context.mapLayer.toGeoJSON()}, 'popup');
             context.map.closePopup(e.popup);
@@ -31800,10 +31801,8 @@ module.exports = function(context) {
                 }
             });
 
-            // console.log("------->", layers);
 
             layers.forEach(function(layer) {
-                // console.log("Processing layer", layer);
                 // Rescale layer to new extent
                 var bounds = context.map.getBounds();
                 var boundsCommaSeparated =
@@ -31816,6 +31815,7 @@ module.exports = function(context) {
                     bounds._southWest.lat;
                 var layers = layer.wmsParams.layers;
                 var styles = layer.wmsParams.styles;
+                // TODO: Replace Fetch with regular xmlhttpreq
                 fetch(
                     "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
                         layers +
@@ -31824,11 +31824,9 @@ module.exports = function(context) {
                         "&width=256&height=256"
                 )
                     .then(function(data) {
-                        // console.log(data);
                         return data.json();
                     })
                     .then(function(json) {
-                        // console.log(json, layer);
 
                         var splitStyles = styles.split(":");
                         layer.setParams({
@@ -31961,6 +31959,10 @@ module.exports = function(context, readonly) {
         var features = [];
         layer.eachLayer(collect);
         function collect(l) { if ('toGeoJSON' in l) features.push(l.toGeoJSON()); }
+        features = features.map(function(feature, i) {
+            feature.properties["Nr"] = i;
+            return feature;
+        });
         return {
             type: 'FeatureCollection',
             features: features
@@ -31992,6 +31994,7 @@ function bindPopup(l) {
     var props = JSON.parse(JSON.stringify(l.toGeoJSON().properties)),
         table = '',
         info = '';
+
 
     var properties = {
         "Nr": "",

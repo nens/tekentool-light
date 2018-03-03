@@ -41,6 +41,7 @@ module.exports = function(context) {
                         losslessNumber(d3.select(this).selectAll('input')[0][1].value);
                 }
             }
+            // obj['Nr'] = window.api.data.all().map.features.length;
             e.popup._source.feature.properties = obj;
             context.data.set({map: context.mapLayer.toGeoJSON()}, 'popup');
             context.map.closePopup(e.popup);
