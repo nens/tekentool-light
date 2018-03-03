@@ -20,7 +20,7 @@
     <script type='text/javascript' src='lib/aight.min.js'></script>
   <![endif]-->
   <script src='lib/mapbox.js/latest/mapbox.js'></script>
-  <meta http-equiv="Content-Security-Policy" content="
+<!--   <meta http-equiv="Content-Security-Policy" content="
     default-src
       'self'
       ;
@@ -53,7 +53,7 @@
       'self'
       'unsafe-inline'
       ;
-  ">
+  "> -->
 
 <script>
 
@@ -5788,6 +5788,10 @@ var data = {
 
 <div class='geojsonio'></div>
 
+<div style="position:absolute;bottom:0;left:0;width:100px;background-color:#fff;padding:10px;">
+  <a href="https://www.youtube.com/watch?v=iDA9HN4loIE" target="_blank">Instructievideo</a>
+</div>
+
 <script>
 if (self == top) {
   document.getElementsByTagName ("body")[0].style.display = 'block';
@@ -5799,9 +5803,14 @@ if (self == top) {
 #geojsonio-body > div > div > div.file-bar > div.inline > div:nth-child(1) {
   display: none;
 }
+.hopscotch-bubble-arrow-container.right {
+  display: none;
+  /*min-width: 0;*/
+}
 </style>
 <script src='dist/delegate.js'></script>
 <script src='dist/lib.js'></script>
 <script src='dist/site.js'></script>
+
 </body>
 </html>

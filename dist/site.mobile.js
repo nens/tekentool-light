@@ -31168,10 +31168,14 @@ module.exports = function fileBar(context) {
                 .call(submenu(d.children));
         });
 
+
         var name = selection.append('div')
             .attr('class', 'name');
 
         name.text(window.mapTitle);
+
+
+        
 
         if (mapboxAPI || githubAPI) {
             var filetype = name.append('a')

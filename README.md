@@ -30,6 +30,10 @@ Run `make` everytime you change the code and wish to see the updates.
 TODO
 ----
 
+- Disable mask console shortcut (disableMask())
+
+- Add instruction video
+
 - Fix shp-write IE bug: https://github.com/mapbox/shp-write/pull/50/files
 
 - Enable masking (needed!!!)
