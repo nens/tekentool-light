@@ -111,6 +111,7 @@ module.exports = function(context) {
                     layer.url.indexOf("demo.lizard.net") > -1 ||
                     layer.url.indexOf("maps1.klimaatatlas.net") > -1
                 ) {
+                    // make relative!!!
                     wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;
                 }
 

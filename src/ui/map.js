@@ -22,11 +22,23 @@ module.exports = function(context, readonly) {
     writable = !readonly;
 
     function map(selection) {
+        // Set map to that of configured map
         context.map = L.mapbox.map(selection.node(), null)
-            .setView([20, 0], 2)
             .addControl(L.mapbox.geocoderControl('mapbox.places', {
                 position: 'topright'
             }));
+
+        if (data.topleft && data.bottomright) {
+          var tl = data.topleft.split(",");
+          var br = data.bottomright.split(",")
+          context.map.fitBounds([
+            [tl[0], tl[1]],
+            [br[0], br[1]]
+          ]);            
+        }
+        else {
+          context.map.setView([52.1858,5.2677], 8);
+        }
 
         L.control.scale().setPosition('bottomright').addTo(context.map);
         context.map.zoomControl.setPosition('topright');

@@ -30043,7 +30043,6 @@ module.exports = function(context) {
                         losslessNumber(d3.select(this).selectAll('input')[0][1].value);
                 }
             }
-            // obj['Nr'] = window.api.data.all().map.features.length;
             e.popup._source.feature.properties = obj;
             context.data.set({map: context.mapLayer.toGeoJSON()}, 'popup');
             context.map.closePopup(e.popup);
@@ -31647,6 +31646,7 @@ module.exports = function(context) {
                     layer.url.indexOf("demo.lizard.net") > -1 ||
                     layer.url.indexOf("maps1.klimaatatlas.net") > -1
                 ) {
+                    // make relative!!!
                     wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;
                 }
 
@@ -31773,11 +31773,23 @@ module.exports = function(context, readonly) {
     writable = !readonly;
 
     function map(selection) {
+        // Set map to that of configured map
         context.map = L.mapbox.map(selection.node(), null)
-            .setView([20, 0], 2)
             .addControl(L.mapbox.geocoderControl('mapbox.places', {
                 position: 'topright'
             }));
+
+        if (data.topleft && data.bottomright) {
+          var tl = data.topleft.split(",");
+          var br = data.bottomright.split(",")
+          context.map.fitBounds([
+            [tl[0], tl[1]],
+            [br[0], br[1]]
+          ]);            
+        }
+        else {
+          context.map.setView([52.1858,5.2677], 8);
+        }
 
         L.control.scale().setPosition('bottomright').addTo(context.map);
         context.map.zoomControl.setPosition('topright');

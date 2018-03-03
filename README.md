@@ -30,7 +30,7 @@ Run `make` everytime you change the code and wish to see the updates.
 TODO
 ----
 
-- On load, zoom to center of configured map
+- DONE On load, zoom to center of configured map
 
 - NOT DOING, SWITCHED TO GEOJSON Fix shp-write IE bug: https://github.com/mapbox/shp-write/pull/50/files
 
