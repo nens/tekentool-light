@@ -31613,18 +31613,20 @@ module.exports = function(context) {
         if (data.topleft && data.bottomright) {
             var tl = data.topleft.split(",");
             var br = data.bottomright.split(",");
-            L.mask(
+            window.mask = L.mask(
                 [[Number(tl[0]), Number(tl[1])], [Number(br[0]), Number(br[1])]],
                 data.boundingPolygon
             ).addTo(context.map);
         } else if (data.boundingPolygon) {
             // If there is only a polygon, ignore the bounds
-            L.mask(null, data.boundingPolygon).addTo(
+            window.mask = L.mask(null, data.boundingPolygon).addTo(
                 context.map
             );
         }
 
-
+        window.removeMask = function() {
+            api.map.removeLayer(window.mask);
+        }
 
         var mapId = getParameterByName("mapid");
         var _map = data.maps.filter(function(m) {
