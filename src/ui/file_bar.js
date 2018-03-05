@@ -33,19 +33,19 @@ module.exports = function fileBar(context) {
     var exportFormats = [{
         title: 'GeoJSON',
         action: downloadGeoJSON
-    },
+    }
 
     // {
     //     title: 'TopoJSON',
     //     action: downloadTopo
     // }
-    {
-        title: 'CSV',
-        action: downloadDSV
-    }, {
-        title: 'KML',
-        action: downloadKML
-    }
+    // {
+    //     title: 'CSV',
+    //     action: downloadDSV
+    // }, {
+    //     title: 'KML',
+    //     action: downloadKML
+    // }
     // , {
     //     title: 'WKT',
     //     action: downloadWKT
