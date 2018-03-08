@@ -111,8 +111,8 @@ module.exports = function(context) {
                     layer.url.indexOf("demo.lizard.net") > -1 ||
                     layer.url.indexOf("maps1.klimaatatlas.net") > -1
                 ) {
-                    // make relative!!!
-                    wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;
+                    // TODO: make relative!!!
+                    wmsUrl = "/proxy/" + layer.url;
                 }
 
                 if (layer.hasOwnProperty("styles")) {
@@ -155,15 +155,21 @@ module.exports = function(context) {
                         "https://cartodb-basemaps-d.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
                     ).addTo(context.map),
                     Topo: L.mapbox.tileLayer("mapbox.streets"),
-                    Light: L.mapbox.tileLayer("mapbox.light")
+                    Light: L.mapbox.tileLayer("mapbox.light"),
+                    "Satelliet (Mapbox)": L.tileLayer(
+                        "https://c.tiles.mapbox.com/v3/nelenschuurmans.iaa79205/{z}/{x}/{y}.png"
+                    ),
+                    "Luchtfoto (PDOK)": L.tileLayer.wms(
+                        "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms", {
+                            layers: "Actueel_ortho25"
+                        }
+                    )
                 },
                 obj
             )
             .addTo(context.map);
 
         context.map.on("zoomend", function(e) {
-            // console.log(e);
-
             var layers = [];
             context.map.eachLayer(function(layer) {
                 if (
@@ -189,25 +195,30 @@ module.exports = function(context) {
                     bounds._southWest.lat;
                 var layers = layer.wmsParams.layers;
                 var styles = layer.wmsParams.styles;
-                // TODO: Replace Fetch with regular xmlhttpreq
-                fetch(
-                    "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
-                        layers +
-                        "&bbox=" +
-                        boundsCommaSeparated +
-                        "&width=256&height=256"
-                )
-                    .then(function(data) {
-                        return data.json();
-                    })
-                    .then(function(json) {
 
-                        var splitStyles = styles.split(":");
-                        layer.setParams({
-                            styles:
-                                splitStyles[0] + ":" + json[0] + ":" + json[1]
-                        });
-                    });
+
+                var oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", function() {
+                      var json = JSON.parse(this.responseText);
+                      var splitStyles = styles.split(":");
+                      var newStyles = splitStyles[0] + ":" + json[0].join(":");
+                      if (newStyles.indexOf("dem-nl") > -1) {
+                        // ONLY RESCALE DEM-NL FOR NOW
+                          layer.setParams({
+                              styles: newStyles
+                          });
+                      }
+                });
+                oReq.open(
+                  "GET",
+                  "/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
+                    layers +
+                    "&bbox=" +
+                    boundsCommaSeparated +
+                    "&width=256&height=256"
+                );
+                oReq.send();                
+
             });
         });
     };
