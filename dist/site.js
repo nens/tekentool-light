@@ -31895,6 +31895,23 @@ module.exports = function(context, readonly) {
     function map(selection) {
         // Set map to that of configured map
         context.map = L.map(selection.node(), null);
+
+        var geocoder = L.Control.geocoder({
+                defaultMarkGeocode: false,
+                placeholder: "Zoeken..."
+            })
+            .on('markgeocode', function(e) {
+                var bbox = e.geocode.bbox;
+                var poly = L.polygon([
+                     bbox.getSouthEast(),
+                     bbox.getNorthEast(),
+                     bbox.getNorthWest(),
+                     bbox.getSouthWest()
+                ]);
+                context.map.fitBounds(poly.getBounds());
+            })
+            .addTo(context.map);        
+
             // .addControl(L.mapbox.geocoderControl('mapbox.places', {
             //     position: 'topright'
             // }));
