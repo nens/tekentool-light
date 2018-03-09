@@ -23,10 +23,10 @@ module.exports = function(context, readonly) {
 
     function map(selection) {
         // Set map to that of configured map
-        context.map = L.mapbox.map(selection.node(), null)
-            .addControl(L.mapbox.geocoderControl('mapbox.places', {
-                position: 'topright'
-            }));
+        context.map = L.map(selection.node(), null);
+            // .addControl(L.mapbox.geocoderControl('mapbox.places', {
+            //     position: 'topright'
+            // }));
 
         if (data.topleft && data.bottomright) {
           var tl = data.topleft.split(",");
@@ -89,9 +89,8 @@ module.exports = function(context, readonly) {
                   circle: false,
                   polyline: { metric: (navigator.language !== 'en-us' && navigator.language !== 'en-US') },
                   polygon: { metric: (navigator.language !== 'en-us' && navigator.language !== 'en-US') },
-                  marker: {
-                      icon: L.mapbox.marker.icon({})
-                  }
+                  marker: true,
+                  circlemarker: false
               }
           }).addTo(context.map);
 
@@ -142,14 +141,117 @@ module.exports = function(context, readonly) {
     return map;
 };
 
+
 function geojsonToLayer(geojson, layer) {
+
+
+    function format_url(path, accessToken) {
+        accessToken = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw";
+
+        var url = (document.location.protocol === 'https:') ? "https://a.tiles.mapbox.com/v4" : "http://a.tiles.mapbox.com/v4";
+
+        url = url.replace(/\/v4$/, '');
+        url += path;
+        url += url.indexOf('?') !== -1 ? '&access_token=' : '?access_token=';
+        url += accessToken;
+        // if (config.REQUIRE_ACCESS_TOKEN) {
+        //     if (accessToken[0] === 's') {
+        //         throw new Error('Use a public access token (pk.*) with Mapbox.js, not a secret access token (sk.*). ' +
+        //             'See https://www.mapbox.com/mapbox.js/api/v' + version + '/api-access-tokens/');
+        //     }
+
+        //     url += url.indexOf('?') !== -1 ? '&access_token=' : '?access_token=';
+        //     url += accessToken;
+        // }
+
+        return url;
+
+    }
+
+    function icon(fp, options) {
+        fp = fp || {};
+
+        var sizes = {
+                small: [20, 50],
+                medium: [30, 70],
+                large: [35, 90]
+            },
+            size = fp['marker-size'] || 'medium',
+            symbol = ('marker-symbol' in fp && fp['marker-symbol'] !== '') ? '-' + fp['marker-symbol'] : '',
+            color = (fp['marker-color'] || '7e7e7e').replace('#', '');
+
+        return L.icon({
+            iconUrl: format_url('/v4/marker/' +
+                'pin-' + size.charAt(0) + symbol + '+' + color +
+                // detect and use retina markers, which are x2 resolution
+                (L.Browser.retina ? '@2x' : '') + '.png', options && options.accessToken),
+            iconSize: sizes[size],
+            iconAnchor: [sizes[size][0] / 2, sizes[size][1] / 2],
+            popupAnchor: [0, -sizes[size][1] / 2]
+        });
+    }
+
+
+    var defaults = {
+        stroke: '#555555',
+        'stroke-width': 2,
+        'stroke-opacity': 1,
+        fill: '#555555',
+        'fill-opacity': 0.5
+    };
+
+    var mapping = [
+        ['stroke', 'color'],
+        ['stroke-width', 'weight'],
+        ['stroke-opacity', 'opacity'],
+        ['fill', 'fillColor'],
+        ['fill-opacity', 'fillOpacity']
+    ];
+
+    function fallback(a, b) {
+        var c = {};
+        for (var k in b) {
+            if (a[k] === undefined) c[k] = b[k];
+            else c[k] = a[k];
+        }
+        return c;
+    }
+
+    function remap(a) {
+        var d = {};
+        for (var i = 0; i < mapping.length; i++) {
+            d[mapping[i][1]] = a[mapping[i][0]];
+        }
+        return d;
+    }
+
+    function style(feature) {
+        return remap(fallback(feature.properties || {}, defaults));
+    }
+
+    function strip_tags(_) {
+        return _.replace(/<[^<]+>/g, '');
+    }
+
+    function markerStyle(f, latlon, options) {
+        return L.marker(latlon, {
+            icon: icon(f.properties, options),
+            title: strip_tags(
+                // sanitize(
+                    (f.properties && f.properties.title) || '')
+                // )
+        });
+    }
+
+
+
 
     layer.clearLayers();
     L.geoJson(geojson, {
-        style: L.mapbox.simplestyle.style,
+        style: style,
         pointToLayer: function(feature, latlon) {
             if (!feature.properties) feature.properties = {};
-            return L.mapbox.marker.style(feature, latlon);
+            return markerStyle(feature, latlon);
         }
     }).eachLayer(add);
     function add(l) {

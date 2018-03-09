@@ -111,8 +111,12 @@ module.exports = function(context) {
                     layer.url.indexOf("demo.lizard.net") > -1 ||
                     layer.url.indexOf("maps1.klimaatatlas.net") > -1
                 ) {
-                    // TODO: make relative!!!
-                    wmsUrl = "/proxy/" + layer.url;
+                    if (window.location.href.indexOf("localhost") > -1) {
+                        wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;    
+                    }
+                    else {
+                        wmsUrl = "/proxy/" + layer.url;    
+                    }
                 }
 
                 if (layer.hasOwnProperty("styles")) {
@@ -154,8 +158,8 @@ module.exports = function(context) {
                     Standaard: L.tileLayer(
                         "https://cartodb-basemaps-d.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
                     ).addTo(context.map),
-                    Topo: L.mapbox.tileLayer("mapbox.streets"),
-                    Light: L.mapbox.tileLayer("mapbox.light"),
+                    // Topo: L.tileLayer("mapbox.streets"),
+                    // Light: L.tileLayer("mapbox.light"),
                     "Satelliet (Mapbox)": L.tileLayer(
                         "https://c.tiles.mapbox.com/v3/nelenschuurmans.iaa79205/{z}/{x}/{y}.png"
                     ),
@@ -165,7 +169,9 @@ module.exports = function(context) {
                         }
                     )
                 },
-                obj
+                obj, {
+                    position: 'bottomright'
+                }
             )
             .addTo(context.map);
 
@@ -209,14 +215,26 @@ module.exports = function(context) {
                           });
                       }
                 });
-                oReq.open(
-                  "GET",
-                  "/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
-                    layers +
-                    "&bbox=" +
-                    boundsCommaSeparated +
-                    "&width=256&height=256"
-                );
+                if (window.location.href.indexOf('localhost') > -1) {
+                    oReq.open(
+                      "GET",
+                      "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
+                        layers +
+                        "&bbox=" +
+                        boundsCommaSeparated +
+                        "&width=256&height=256"
+                    );
+                }
+                else {
+                    oReq.open(
+                      "GET",
+                      "/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
+                        layers +
+                        "&bbox=" +
+                        boundsCommaSeparated +
+                        "&width=256&height=256"
+                    );                    
+                }
                 oReq.send();                
 
             });

@@ -29267,26 +29267,26 @@ function extend() {
 },{}],176:[function(require,module,exports){
 module.exports = function(hostname) {
     // Settings for geojson.io
-    L.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A';
-    if (hostname === 'geojson.io') {
-        L.mapbox.config.FORCE_HTTPS = true;
-        return {
-            client_id: '62c753fd0faf18392d85',
-            gatekeeper_url: 'https://geojsonioauth.herokuapp.com'
-        };
-    // Customize these settings for your own development/deployment
-    // version of geojson.io.
-    } else {
-        L.mapbox.config.HTTP_URL = 'http://a.tiles.mapbox.com/v4';
-        L.mapbox.config.HTTPS_URL = 'https://a.tiles.mapbox.com/v4';
-        L.mapbox.config.FORCE_HTTPS = true;
-        L.mapbox.config.REQUIRE_ACCESS_TOKEN = true;
+    L.accessToken = 'pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw';
+    // if (hostname === 'geojson.io') {
+    //     L.mapbox.config.FORCE_HTTPS = true;
+    //     return {
+    //         client_id: '62c753fd0faf18392d85',
+    //         gatekeeper_url: 'https://geojsonioauth.herokuapp.com'
+    //     };
+    // // Customize these settings for your own development/deployment
+    // // version of geojson.io.
+    // } else {
+    //     L.mapbox.config.HTTP_URL = 'http://a.tiles.mapbox.com/v4';
+    //     L.mapbox.config.HTTPS_URL = 'https://a.tiles.mapbox.com/v4';
+    //     L.mapbox.config.FORCE_HTTPS = true;
+    //     L.mapbox.config.REQUIRE_ACCESS_TOKEN = true;
         return {
             GithubAPI: null,
             client_id: 'bb7bbe70bd1f707125bc',
             gatekeeper_url: 'https://localhostauth.herokuapp.com'
         };
-    }
+    // }
 };
 
 },{}],177:[function(require,module,exports){
@@ -31646,8 +31646,12 @@ module.exports = function(context) {
                     layer.url.indexOf("demo.lizard.net") > -1 ||
                     layer.url.indexOf("maps1.klimaatatlas.net") > -1
                 ) {
-                    // make relative!!!
-                    wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;
+                    if (window.location.href.indexOf("localhost") > -1) {
+                        wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;    
+                    }
+                    else {
+                        wmsUrl = "/proxy/" + layer.url;    
+                    }
                 }
 
                 if (layer.hasOwnProperty("styles")) {
@@ -31689,16 +31693,24 @@ module.exports = function(context) {
                     Standaard: L.tileLayer(
                         "https://cartodb-basemaps-d.global.ssl.fastly.net/rastertiles/voyager_nolabels/{z}/{x}/{y}.png"
                     ).addTo(context.map),
-                    Topo: L.mapbox.tileLayer("mapbox.streets"),
-                    Light: L.mapbox.tileLayer("mapbox.light")
+                    // Topo: L.tileLayer("mapbox.streets"),
+                    // Light: L.tileLayer("mapbox.light"),
+                    "Satelliet (Mapbox)": L.tileLayer(
+                        "https://c.tiles.mapbox.com/v3/nelenschuurmans.iaa79205/{z}/{x}/{y}.png"
+                    ),
+                    "Luchtfoto (PDOK)": L.tileLayer.wms(
+                        "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms", {
+                            layers: "Actueel_ortho25"
+                        }
+                    )
                 },
-                obj
+                obj, {
+                    position: 'bottomright'
+                }
             )
             .addTo(context.map);
 
         context.map.on("zoomend", function(e) {
-            // console.log(e);
-
             var layers = [];
             context.map.eachLayer(function(layer) {
                 if (
@@ -31724,25 +31736,42 @@ module.exports = function(context) {
                     bounds._southWest.lat;
                 var layers = layer.wmsParams.layers;
                 var styles = layer.wmsParams.styles;
-                // TODO: Replace Fetch with regular xmlhttpreq
-                fetch(
-                    "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
+
+
+                var oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", function() {
+                      var json = JSON.parse(this.responseText);
+                      var splitStyles = styles.split(":");
+                      var newStyles = splitStyles[0] + ":" + json[0].join(":");
+                      if (newStyles.indexOf("dem-nl") > -1) {
+                        // ONLY RESCALE DEM-NL FOR NOW
+                          layer.setParams({
+                              styles: newStyles
+                          });
+                      }
+                });
+                if (window.location.href.indexOf('localhost') > -1) {
+                    oReq.open(
+                      "GET",
+                      "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
                         layers +
                         "&bbox=" +
                         boundsCommaSeparated +
                         "&width=256&height=256"
-                )
-                    .then(function(data) {
-                        return data.json();
-                    })
-                    .then(function(json) {
+                    );
+                }
+                else {
+                    oReq.open(
+                      "GET",
+                      "/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
+                        layers +
+                        "&bbox=" +
+                        boundsCommaSeparated +
+                        "&width=256&height=256"
+                    );                    
+                }
+                oReq.send();                
 
-                        var splitStyles = styles.split(":");
-                        layer.setParams({
-                            styles:
-                                splitStyles[0] + ":" + json[0] + ":" + json[1]
-                        });
-                    });
             });
         });
     };
@@ -31774,10 +31803,10 @@ module.exports = function(context, readonly) {
 
     function map(selection) {
         // Set map to that of configured map
-        context.map = L.mapbox.map(selection.node(), null)
-            .addControl(L.mapbox.geocoderControl('mapbox.places', {
-                position: 'topright'
-            }));
+        context.map = L.map(selection.node(), null);
+            // .addControl(L.mapbox.geocoderControl('mapbox.places', {
+            //     position: 'topright'
+            // }));
 
         if (data.topleft && data.bottomright) {
           var tl = data.topleft.split(",");
@@ -31840,9 +31869,8 @@ module.exports = function(context, readonly) {
                   circle: false,
                   polyline: { metric: (navigator.language !== 'en-us' && navigator.language !== 'en-US') },
                   polygon: { metric: (navigator.language !== 'en-us' && navigator.language !== 'en-US') },
-                  marker: {
-                      icon: L.mapbox.marker.icon({})
-                  }
+                  marker: true,
+                  circlemarker: false
               }
           }).addTo(context.map);
 
@@ -31893,14 +31921,117 @@ module.exports = function(context, readonly) {
     return map;
 };
 
+
 function geojsonToLayer(geojson, layer) {
+
+
+    function format_url(path, accessToken) {
+        accessToken = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw";
+
+        var url = (document.location.protocol === 'https:') ? "https://a.tiles.mapbox.com/v4" : "http://a.tiles.mapbox.com/v4";
+
+        url = url.replace(/\/v4$/, '');
+        url += path;
+        url += url.indexOf('?') !== -1 ? '&access_token=' : '?access_token=';
+        url += accessToken;
+        // if (config.REQUIRE_ACCESS_TOKEN) {
+        //     if (accessToken[0] === 's') {
+        //         throw new Error('Use a public access token (pk.*) with Mapbox.js, not a secret access token (sk.*). ' +
+        //             'See https://www.mapbox.com/mapbox.js/api/v' + version + '/api-access-tokens/');
+        //     }
+
+        //     url += url.indexOf('?') !== -1 ? '&access_token=' : '?access_token=';
+        //     url += accessToken;
+        // }
+
+        return url;
+
+    }
+
+    function icon(fp, options) {
+        fp = fp || {};
+
+        var sizes = {
+                small: [20, 50],
+                medium: [30, 70],
+                large: [35, 90]
+            },
+            size = fp['marker-size'] || 'medium',
+            symbol = ('marker-symbol' in fp && fp['marker-symbol'] !== '') ? '-' + fp['marker-symbol'] : '',
+            color = (fp['marker-color'] || '7e7e7e').replace('#', '');
+
+        return L.icon({
+            iconUrl: format_url('/v4/marker/' +
+                'pin-' + size.charAt(0) + symbol + '+' + color +
+                // detect and use retina markers, which are x2 resolution
+                (L.Browser.retina ? '@2x' : '') + '.png', options && options.accessToken),
+            iconSize: sizes[size],
+            iconAnchor: [sizes[size][0] / 2, sizes[size][1] / 2],
+            popupAnchor: [0, -sizes[size][1] / 2]
+        });
+    }
+
+
+    var defaults = {
+        stroke: '#555555',
+        'stroke-width': 2,
+        'stroke-opacity': 1,
+        fill: '#555555',
+        'fill-opacity': 0.5
+    };
+
+    var mapping = [
+        ['stroke', 'color'],
+        ['stroke-width', 'weight'],
+        ['stroke-opacity', 'opacity'],
+        ['fill', 'fillColor'],
+        ['fill-opacity', 'fillOpacity']
+    ];
+
+    function fallback(a, b) {
+        var c = {};
+        for (var k in b) {
+            if (a[k] === undefined) c[k] = b[k];
+            else c[k] = a[k];
+        }
+        return c;
+    }
+
+    function remap(a) {
+        var d = {};
+        for (var i = 0; i < mapping.length; i++) {
+            d[mapping[i][1]] = a[mapping[i][0]];
+        }
+        return d;
+    }
+
+    function style(feature) {
+        return remap(fallback(feature.properties || {}, defaults));
+    }
+
+    function strip_tags(_) {
+        return _.replace(/<[^<]+>/g, '');
+    }
+
+    function markerStyle(f, latlon, options) {
+        return L.marker(latlon, {
+            icon: icon(f.properties, options),
+            title: strip_tags(
+                // sanitize(
+                    (f.properties && f.properties.title) || '')
+                // )
+        });
+    }
+
+
+
 
     layer.clearLayers();
     L.geoJson(geojson, {
-        style: L.mapbox.simplestyle.style,
+        style: style,
         pointToLayer: function(feature, latlon) {
             if (!feature.properties) feature.properties = {};
-            return L.mapbox.marker.style(feature, latlon);
+            return markerStyle(feature, latlon);
         }
     }).eachLayer(add);
     function add(l) {

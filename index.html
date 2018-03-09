@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=Edge'>
-  <link href='lib/mapbox.js/latest/mapbox.css' rel='stylesheet' />
+  <link href='lib/leaflet/leaflet.css' rel='stylesheet' />
   <link rel='stylesheet' href='css/font-awesome/css/font-awesome.min.css'>
   <link rel='stylesheet' href='css/fonts/mplus.css'>
   <title>Klimaatatlas | Intekentool</title>
@@ -19,7 +19,7 @@
   <!--[if lt IE 9]>
     <script type='text/javascript' src='lib/aight.min.js'></script>
   <![endif]-->
-  <script src='lib/mapbox.js/latest/mapbox.js'></script>
+  <script src='lib/leaflet/leaflet.js'></script>
 <!--   <meta http-equiv="Content-Security-Policy" content="
     default-src
       'self'
@@ -5788,7 +5788,7 @@ var data = {
 
 <div class='geojsonio'></div>
 
-<div style="position:absolute;bottom:0;left:0;width:100px;background-color:#fff;padding:10px;">
+<div id="instruction-video-link">
   <a href="https://www.youtube.com/watch?v=iDA9HN4loIE" target="_blank">Instructievideo</a>
 </div>
 
@@ -5800,6 +5800,18 @@ if (self == top) {
 }
 </script>
 <style>
+#instruction-video-link {
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100px;
+  background-color:#fff;
+  padding:10px;
+  z-index:99999998;
+}
+.file-bar {
+  z-index: 99999999;
+}
 #geojsonio-body > div > div > div.file-bar > div.inline > div:nth-child(1) {
   display: none;
 }

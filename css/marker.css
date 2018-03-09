@@ -49,18 +49,20 @@
     float: left;
     width: 100%;
     padding: 0;
+    border-radius: 0 !important;
 }
 
 .geojsonio-feature .leaflet-popup-content {
     float: left;
     padding: 0 !important;
-    width:100%;
+    width: 275px;
 }
 
 .geojsonio-feature .leaflet-popup-tip-container {
-    float: left;
+/*    float: left;
     margin-left: 50%;
-    right: 10px;
+    right: 10px;*/
+    bottom: -20px;
 }
 
 datalist {
