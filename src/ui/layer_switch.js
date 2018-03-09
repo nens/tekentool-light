@@ -111,7 +111,7 @@ module.exports = function(context) {
                     layer.url.indexOf("demo.lizard.net") > -1 ||
                     layer.url.indexOf("maps1.klimaatatlas.net") > -1
                 ) {
-                    if (window.location.href.indexOf("localhost") > -1) {
+                    if (window.location.href.indexOf("localhost") > -1 || window.location.href.indexOf('github') > -1) {
                         wmsUrl = "https://wpn.klimaatatlas.net/proxy/" + layer.url;    
                     }
                     else {
@@ -215,7 +215,7 @@ module.exports = function(context) {
                           });
                       }
                 });
-                if (window.location.href.indexOf('localhost') > -1) {
+                if (window.location.href.indexOf('localhost') > -1 || window.location.href.indexOf('github') > -1) {
                     oReq.open(
                       "GET",
                       "https://wpn.klimaatatlas.net/proxy/https://demo.lizard.net/api/v3/wms?request=getlimits&version=1.1.1&srs=EPSG%3A4326&layers=" +
