@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "browserify": "",
-    "eslint": "^1.10.3",
+    "eslint": "^4.18.2",
     "node-gyp": "",
     "tape": "~2.12.3"
   },
