@@ -161,7 +161,7 @@ module.exports = function(context) {
                     // Topo: L.tileLayer("mapbox.streets"),
                     // Light: L.tileLayer("mapbox.light"),
                     "Satelliet (Mapbox)": L.tileLayer(
-                        "https://api.mapbox.com/styles/v1/nelenschuurmans/ck8oabi090nys1imfdxgb6nv3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw"
+                        "https://api.mapbox.com/styles/v1/nelenschuurmans/ck8oabi090nys1imfdxgb6nv3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg"
                     ),
                     "Luchtfoto (PDOK)": L.tileLayer.wms(
                         "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms", {
