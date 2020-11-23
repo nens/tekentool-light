@@ -163,7 +163,7 @@ function geojsonToLayer(geojson, layer) {
 
 
     function format_url(path, accessToken) {
-        accessToken = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw";
+        accessToken = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg";
 
         var url = (document.location.protocol === 'https:') ? "https://a.tiles.mapbox.com/v4" : "http://a.tiles.mapbox.com/v4";
 

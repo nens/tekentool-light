@@ -1329,7 +1329,7 @@ function page(postfix, callback) {
     });
 }
 
-},{"browser-request":8}],3:[function(require,module,exports){
+},{"browser-request":10}],3:[function(require,module,exports){
 var queue = require('queue-async'),
     request = require('browser-request'),
     treeui = require('treeui'),
@@ -1464,8 +1464,35 @@ function req(postfix, callback) {
     }
 }
 
-},{"browser-request":8,"queue-async":94,"treeui":154}],4:[function(require,module,exports){
-(function (global){
+},{"browser-request":10,"queue-async":108,"treeui":168}],4:[function(require,module,exports){
+
+/**
+ * Array#filter.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Object=} self
+ * @return {Array}
+ * @throw TypeError
+ */
+
+module.exports = function (arr, fn, self) {
+  if (arr.filter) return arr.filter(fn, self);
+  if (void 0 === arr || null === arr) throw new TypeError;
+  if ('function' != typeof fn) throw new TypeError;
+  var ret = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (!hasOwn.call(arr, i)) continue;
+    var val = arr[i];
+    if (fn.call(self, val, i, arr)) ret.push(val);
+  }
+  return ret;
+};
+
+var hasOwn = Object.prototype.hasOwnProperty;
+
+},{}],5:[function(require,module,exports){
+(function (global){(function (){
 'use strict';
 
 var objectAssign = require('object-assign');
@@ -1973,8 +2000,8 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"object-assign":68,"util/":7}],5:[function(require,module,exports){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"object-assign":82,"util/":8}],6:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1999,15 +2026,15 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],7:[function(require,module,exports){
-(function (process,global){
+},{}],8:[function(require,module,exports){
+(function (process,global){(function (){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2595,8 +2622,33 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":6,"_process":92,"inherits":5}],8:[function(require,module,exports){
+}).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":7,"_process":106,"inherits":6}],9:[function(require,module,exports){
+(function (global){(function (){
+'use strict';
+
+var filter = require('array-filter');
+
+module.exports = function availableTypedArrays() {
+	return filter([
+		'BigInt64Array',
+		'BigUint64Array',
+		'Float32Array',
+		'Float64Array',
+		'Int16Array',
+		'Int32Array',
+		'Int8Array',
+		'Uint16Array',
+		'Uint32Array',
+		'Uint8Array',
+		'Uint8ClampedArray'
+	], function (typedArray) {
+		return typeof global[typedArray] === 'function';
+	});
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"array-filter":4}],10:[function(require,module,exports){
 // Browser Request
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -3092,12 +3144,12 @@ function b64_enc (data) {
 }));
 //UMD FOOTER END
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 
-},{}],10:[function(require,module,exports){
-arguments[4][9][0].apply(exports,arguments)
-},{"dup":9}],11:[function(require,module,exports){
-(function (Buffer){
+},{}],12:[function(require,module,exports){
+arguments[4][11][0].apply(exports,arguments)
+},{"dup":11}],13:[function(require,module,exports){
+(function (Buffer){(function (){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -4876,8 +4928,8 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-}).call(this,require("buffer").Buffer)
-},{"base64-js":12,"buffer":11,"ieee754":38}],12:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"base64-js":14,"buffer":13,"ieee754":49}],14:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -5005,9 +5057,7 @@ function fromByteArray (uint8) {
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
@@ -5031,8 +5081,8 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],13:[function(require,module,exports){
-(function (Buffer){
+},{}],15:[function(require,module,exports){
+(function (Buffer){(function (){
 'use strict';
 
 function objectToString(o) {
@@ -5162,8 +5212,8 @@ clone.clonePrototype = function(parent) {
   return new c();
 };
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":11}],14:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"buffer":13}],16:[function(require,module,exports){
 var dsv = require('dsv'),
     sexagesimal = require('sexagesimal');
 
@@ -5350,7 +5400,7 @@ module.exports = {
     toPolygon: toPolygon
 };
 
-},{"dsv":21,"sexagesimal":95}],15:[function(require,module,exports){
+},{"dsv":23,"sexagesimal":109}],17:[function(require,module,exports){
 if (typeof module !== 'undefined') {
     module.exports = function(d3) {
         return metatable;
@@ -5541,10 +5591,10 @@ function metatable() {
     return d3.rebind(table, event, 'on');
 }
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports.structure = require('./src/structure');
 
-},{"./src/structure":20}],17:[function(require,module,exports){
+},{"./src/structure":22}],19:[function(require,module,exports){
 var fieldSize = require('./fieldsize');
 
 var types = {
@@ -5588,7 +5638,7 @@ function bytesPer(fields) {
     return fields.reduce(function(memo, f) { return memo + f.size; }, 1);
 }
 
-},{"./fieldsize":18}],18:[function(require,module,exports){
+},{"./fieldsize":20}],20:[function(require,module,exports){
 module.exports = {
     // string
     C: 254,
@@ -5606,7 +5656,7 @@ module.exports = {
     B: 8,
 };
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports.lpad = function lpad(str, len, char) {
     while (str.length < len) { str = char + str; } return str;
 };
@@ -5622,7 +5672,7 @@ module.exports.writeField = function writeField(view, fieldLength, str, offset) 
     return offset;
 };
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var fieldSize = require('./fieldsize'),
     lib = require('./lib'),
     fields = require('./fields');
@@ -5719,12 +5769,309 @@ module.exports = function structure(data) {
     return view;
 };
 
-},{"./fields":17,"./fieldsize":18,"./lib":19}],21:[function(require,module,exports){
+},{"./fields":19,"./fieldsize":20,"./lib":21}],23:[function(require,module,exports){
 
 
 module.exports = new Function("dsv.version = \"0.0.3\";\n\ndsv.tsv = dsv(\"\\t\");\ndsv.csv = dsv(\",\");\n\nfunction dsv(delimiter) {\n  var dsv = {},\n      reFormat = new RegExp(\"[\\\"\" + delimiter + \"\\n]\"),\n      delimiterCode = delimiter.charCodeAt(0);\n\n  dsv.parse = function(text, f) {\n    var o;\n    return dsv.parseRows(text, function(row, i) {\n      if (o) return o(row, i - 1);\n      var a = new Function(\"d\", \"return {\" + row.map(function(name, i) {\n        return JSON.stringify(name) + \": d[\" + i + \"]\";\n      }).join(\",\") + \"}\");\n      o = f ? function(row, i) { return f(a(row), i); } : a;\n    });\n  };\n\n  dsv.parseRows = function(text, f) {\n    var EOL = {}, // sentinel value for end-of-line\n        EOF = {}, // sentinel value for end-of-file\n        rows = [], // output rows\n        N = text.length,\n        I = 0, // current character index\n        n = 0, // the current line number\n        t, // the current token\n        eol; // is the current token followed by EOL?\n\n    function token() {\n      if (I >= N) return EOF; // special case: end of file\n      if (eol) return eol = false, EOL; // special case: end of line\n\n      // special case: quotes\n      var j = I;\n      if (text.charCodeAt(j) === 34) {\n        var i = j;\n        while (i++ < N) {\n          if (text.charCodeAt(i) === 34) {\n            if (text.charCodeAt(i + 1) !== 34) break;\n            ++i;\n          }\n        }\n        I = i + 2;\n        var c = text.charCodeAt(i + 1);\n        if (c === 13) {\n          eol = true;\n          if (text.charCodeAt(i + 2) === 10) ++I;\n        } else if (c === 10) {\n          eol = true;\n        }\n        return text.substring(j + 1, i).replace(/\"\"/g, \"\\\"\");\n      }\n\n      // common case: find next delimiter or newline\n      while (I < N) {\n        var c = text.charCodeAt(I++), k = 1;\n        if (c === 10) eol = true; // \\n\n        else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \\r|\\r\\n\n        else if (c !== delimiterCode) continue;\n        return text.substring(j, I - k);\n      }\n\n      // special case: last token before EOF\n      return text.substring(j);\n    }\n\n    while ((t = token()) !== EOF) {\n      var a = [];\n      while (t !== EOL && t !== EOF) {\n        a.push(t);\n        t = token();\n      }\n      if (f && !(a = f(a, n++))) continue;\n      rows.push(a);\n    }\n\n    return rows;\n  };\n\n  dsv.format = function(rows) {\n    if (Array.isArray(rows[0])) return dsv.formatRows(rows); // deprecated; use formatRows\n    var fieldSet = {}, fields = [];\n\n    // Compute unique fields in order of discovery.\n    rows.forEach(function(row) {\n      for (var field in row) {\n        if (!(field in fieldSet)) {\n          fields.push(fieldSet[field] = field);\n        }\n      }\n    });\n\n    return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {\n      return fields.map(function(field) {\n        return formatValue(row[field]);\n      }).join(delimiter);\n    })).join(\"\\n\");\n  };\n\n  dsv.formatRows = function(rows) {\n    return rows.map(formatRow).join(\"\\n\");\n  };\n\n  function formatRow(row) {\n    return row.map(formatValue).join(delimiter);\n  }\n\n  function formatValue(text) {\n    return reFormat.test(text) ? \"\\\"\" + text.replace(/\\\"/g, \"\\\"\\\"\") + \"\\\"\" : text;\n  }\n\n  return dsv;\n}\n" + ";return dsv")();
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
+'use strict';
+
+/* globals
+	Atomics,
+	SharedArrayBuffer,
+*/
+
+var undefined;
+
+var $TypeError = TypeError;
+
+var $gOPD = Object.getOwnPropertyDescriptor;
+if ($gOPD) {
+	try {
+		$gOPD({}, '');
+	} catch (e) {
+		$gOPD = null; // this is IE 8, which has a broken gOPD
+	}
+}
+
+var throwTypeError = function () { throw new $TypeError(); };
+var ThrowTypeError = $gOPD
+	? (function () {
+		try {
+			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+			arguments.callee; // IE 8 does not throw here
+			return throwTypeError;
+		} catch (calleeThrows) {
+			try {
+				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
+				return $gOPD(arguments, 'callee').get;
+			} catch (gOPDthrows) {
+				return throwTypeError;
+			}
+		}
+	}())
+	: throwTypeError;
+
+var hasSymbols = require('has-symbols')();
+
+var getProto = Object.getPrototypeOf || function (x) { return x.__proto__; }; // eslint-disable-line no-proto
+
+var generator; // = function * () {};
+var generatorFunction = generator ? getProto(generator) : undefined;
+var asyncFn; // async function() {};
+var asyncFunction = asyncFn ? asyncFn.constructor : undefined;
+var asyncGen; // async function * () {};
+var asyncGenFunction = asyncGen ? getProto(asyncGen) : undefined;
+var asyncGenIterator = asyncGen ? asyncGen() : undefined;
+
+var TypedArray = typeof Uint8Array === 'undefined' ? undefined : getProto(Uint8Array);
+
+var INTRINSICS = {
+	'%Array%': Array,
+	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
+	'%ArrayBufferPrototype%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer.prototype,
+	'%ArrayIteratorPrototype%': hasSymbols ? getProto([][Symbol.iterator]()) : undefined,
+	'%ArrayPrototype%': Array.prototype,
+	'%ArrayProto_entries%': Array.prototype.entries,
+	'%ArrayProto_forEach%': Array.prototype.forEach,
+	'%ArrayProto_keys%': Array.prototype.keys,
+	'%ArrayProto_values%': Array.prototype.values,
+	'%AsyncFromSyncIteratorPrototype%': undefined,
+	'%AsyncFunction%': asyncFunction,
+	'%AsyncFunctionPrototype%': asyncFunction ? asyncFunction.prototype : undefined,
+	'%AsyncGenerator%': asyncGen ? getProto(asyncGenIterator) : undefined,
+	'%AsyncGeneratorFunction%': asyncGenFunction,
+	'%AsyncGeneratorPrototype%': asyncGenFunction ? asyncGenFunction.prototype : undefined,
+	'%AsyncIteratorPrototype%': asyncGenIterator && hasSymbols && Symbol.asyncIterator ? asyncGenIterator[Symbol.asyncIterator]() : undefined,
+	'%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
+	'%Boolean%': Boolean,
+	'%BooleanPrototype%': Boolean.prototype,
+	'%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
+	'%DataViewPrototype%': typeof DataView === 'undefined' ? undefined : DataView.prototype,
+	'%Date%': Date,
+	'%DatePrototype%': Date.prototype,
+	'%decodeURI%': decodeURI,
+	'%decodeURIComponent%': decodeURIComponent,
+	'%encodeURI%': encodeURI,
+	'%encodeURIComponent%': encodeURIComponent,
+	'%Error%': Error,
+	'%ErrorPrototype%': Error.prototype,
+	'%eval%': eval, // eslint-disable-line no-eval
+	'%EvalError%': EvalError,
+	'%EvalErrorPrototype%': EvalError.prototype,
+	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
+	'%Float32ArrayPrototype%': typeof Float32Array === 'undefined' ? undefined : Float32Array.prototype,
+	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
+	'%Float64ArrayPrototype%': typeof Float64Array === 'undefined' ? undefined : Float64Array.prototype,
+	'%Function%': Function,
+	'%FunctionPrototype%': Function.prototype,
+	'%Generator%': generator ? getProto(generator()) : undefined,
+	'%GeneratorFunction%': generatorFunction,
+	'%GeneratorPrototype%': generatorFunction ? generatorFunction.prototype : undefined,
+	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
+	'%Int8ArrayPrototype%': typeof Int8Array === 'undefined' ? undefined : Int8Array.prototype,
+	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
+	'%Int16ArrayPrototype%': typeof Int16Array === 'undefined' ? undefined : Int8Array.prototype,
+	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
+	'%Int32ArrayPrototype%': typeof Int32Array === 'undefined' ? undefined : Int32Array.prototype,
+	'%isFinite%': isFinite,
+	'%isNaN%': isNaN,
+	'%IteratorPrototype%': hasSymbols ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
+	'%JSONParse%': typeof JSON === 'object' ? JSON.parse : undefined,
+	'%Map%': typeof Map === 'undefined' ? undefined : Map,
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%MapPrototype%': typeof Map === 'undefined' ? undefined : Map.prototype,
+	'%Math%': Math,
+	'%Number%': Number,
+	'%NumberPrototype%': Number.prototype,
+	'%Object%': Object,
+	'%ObjectPrototype%': Object.prototype,
+	'%ObjProto_toString%': Object.prototype.toString,
+	'%ObjProto_valueOf%': Object.prototype.valueOf,
+	'%parseFloat%': parseFloat,
+	'%parseInt%': parseInt,
+	'%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
+	'%PromisePrototype%': typeof Promise === 'undefined' ? undefined : Promise.prototype,
+	'%PromiseProto_then%': typeof Promise === 'undefined' ? undefined : Promise.prototype.then,
+	'%Promise_all%': typeof Promise === 'undefined' ? undefined : Promise.all,
+	'%Promise_reject%': typeof Promise === 'undefined' ? undefined : Promise.reject,
+	'%Promise_resolve%': typeof Promise === 'undefined' ? undefined : Promise.resolve,
+	'%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
+	'%RangeError%': RangeError,
+	'%RangeErrorPrototype%': RangeError.prototype,
+	'%ReferenceError%': ReferenceError,
+	'%ReferenceErrorPrototype%': ReferenceError.prototype,
+	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
+	'%RegExp%': RegExp,
+	'%RegExpPrototype%': RegExp.prototype,
+	'%Set%': typeof Set === 'undefined' ? undefined : Set,
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SetPrototype%': typeof Set === 'undefined' ? undefined : Set.prototype,
+	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
+	'%SharedArrayBufferPrototype%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer.prototype,
+	'%String%': String,
+	'%StringIteratorPrototype%': hasSymbols ? getProto(''[Symbol.iterator]()) : undefined,
+	'%StringPrototype%': String.prototype,
+	'%Symbol%': hasSymbols ? Symbol : undefined,
+	'%SymbolPrototype%': hasSymbols ? Symbol.prototype : undefined,
+	'%SyntaxError%': SyntaxError,
+	'%SyntaxErrorPrototype%': SyntaxError.prototype,
+	'%ThrowTypeError%': ThrowTypeError,
+	'%TypedArray%': TypedArray,
+	'%TypedArrayPrototype%': TypedArray ? TypedArray.prototype : undefined,
+	'%TypeError%': $TypeError,
+	'%TypeErrorPrototype%': $TypeError.prototype,
+	'%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array,
+	'%Uint8ArrayPrototype%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array.prototype,
+	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
+	'%Uint8ClampedArrayPrototype%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray.prototype,
+	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
+	'%Uint16ArrayPrototype%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array.prototype,
+	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
+	'%Uint32ArrayPrototype%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array.prototype,
+	'%URIError%': URIError,
+	'%URIErrorPrototype%': URIError.prototype,
+	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
+	'%WeakMapPrototype%': typeof WeakMap === 'undefined' ? undefined : WeakMap.prototype,
+	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet,
+	'%WeakSetPrototype%': typeof WeakSet === 'undefined' ? undefined : WeakSet.prototype
+};
+
+var bind = require('function-bind');
+var $replace = bind.call(Function.call, String.prototype.replace);
+
+/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
+var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
+var stringToPath = function stringToPath(string) {
+	var result = [];
+	$replace(string, rePropName, function (match, number, quote, subString) {
+		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : (number || match);
+	});
+	return result;
+};
+/* end adaptation */
+
+var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
+	if (!(name in INTRINSICS)) {
+		throw new SyntaxError('intrinsic ' + name + ' does not exist!');
+	}
+
+	// istanbul ignore if // hopefully this is impossible to test :-)
+	if (typeof INTRINSICS[name] === 'undefined' && !allowMissing) {
+		throw new $TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
+	}
+
+	return INTRINSICS[name];
+};
+
+module.exports = function GetIntrinsic(name, allowMissing) {
+	if (typeof name !== 'string' || name.length === 0) {
+		throw new TypeError('intrinsic name must be a non-empty string');
+	}
+	if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
+		throw new TypeError('"allowMissing" argument must be a boolean');
+	}
+
+	var parts = stringToPath(name);
+
+	var value = getBaseIntrinsic('%' + (parts.length > 0 ? parts[0] : '') + '%', allowMissing);
+	for (var i = 1; i < parts.length; i += 1) {
+		if (value != null) {
+			if ($gOPD && (i + 1) >= parts.length) {
+				var desc = $gOPD(value, parts[i]);
+				if (!allowMissing && !(parts[i] in value)) {
+					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
+				}
+				// By convention, when a data property is converted to an accessor
+				// property to emulate a data property that does not suffer from
+				// the override mistake, that accessor's getter is marked with
+				// an `originalValue` property. Here, when we detect this, we
+				// uphold the illusion by pretending to see that original data
+				// property, i.e., returning the value rather than the getter
+				// itself.
+				value = desc && 'get' in desc && !('originalValue' in desc.get) ? desc.get : value[parts[i]];
+			} else {
+				value = value[parts[i]];
+			}
+		}
+	}
+	return value;
+};
+
+},{"function-bind":33,"has-symbols":47}],25:[function(require,module,exports){
+'use strict';
+
+var bind = require('function-bind');
+
+var GetIntrinsic = require('../GetIntrinsic');
+
+var $apply = GetIntrinsic('%Function.prototype.apply%');
+var $call = GetIntrinsic('%Function.prototype.call%');
+var $reflectApply = GetIntrinsic('%Reflect.apply%', true) || bind.call($call, $apply);
+
+var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
+
+if ($defineProperty) {
+	try {
+		$defineProperty({}, 'a', { value: 1 });
+	} catch (e) {
+		// IE 8 has a broken defineProperty
+		$defineProperty = null;
+	}
+}
+
+module.exports = function callBind() {
+	return $reflectApply(bind, $call, arguments);
+};
+
+var applyBind = function applyBind() {
+	return $reflectApply(bind, $apply, arguments);
+};
+
+if ($defineProperty) {
+	$defineProperty(module.exports, 'apply', { value: applyBind });
+} else {
+	module.exports.apply = applyBind;
+}
+
+},{"../GetIntrinsic":24,"function-bind":33}],26:[function(require,module,exports){
+'use strict';
+
+var GetIntrinsic = require('../GetIntrinsic');
+
+var callBind = require('./callBind');
+
+var $indexOf = callBind(GetIntrinsic('String.prototype.indexOf'));
+
+module.exports = function callBoundIntrinsic(name, allowMissing) {
+	var intrinsic = GetIntrinsic(name, !!allowMissing);
+	if (typeof intrinsic === 'function' && $indexOf(name, '.prototype.')) {
+		return callBind(intrinsic);
+	}
+	return intrinsic;
+};
+
+},{"../GetIntrinsic":24,"./callBind":25}],27:[function(require,module,exports){
+'use strict';
+
+var GetIntrinsic = require('../GetIntrinsic');
+
+var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%');
+if ($gOPD) {
+	try {
+		$gOPD([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		$gOPD = null;
+	}
+}
+
+module.exports = $gOPD;
+
+},{"../GetIntrinsic":24}],28:[function(require,module,exports){
 /*!
  * escape-html
  * Copyright(c) 2012-2013 TJ Holowaychuk
@@ -5804,7 +6151,7 @@ function escapeHtml(string) {
     : html;
 }
 
-},{}],23:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = Extent;
 
 function Extent() {
@@ -5867,7 +6214,7 @@ Extent.prototype.polygon = function() {
     };
 };
 
-},{}],24:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /* FileSaver.js
  *  A saveAs() FileSaver implementation.
  *  2014-05-27
@@ -6110,7 +6457,92 @@ if (typeof module !== "undefined" && module !== null) {
   });
 }
 
-},{}],25:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
+
+var hasOwn = Object.prototype.hasOwnProperty;
+var toString = Object.prototype.toString;
+
+module.exports = function forEach (obj, fn, ctx) {
+    if (toString.call(fn) !== '[object Function]') {
+        throw new TypeError('iterator must be a function');
+    }
+    var l = obj.length;
+    if (l === +l) {
+        for (var i = 0; i < l; i++) {
+            fn.call(ctx, obj[i], i, obj);
+        }
+    } else {
+        for (var k in obj) {
+            if (hasOwn.call(obj, k)) {
+                fn.call(ctx, obj[k], k, obj);
+            }
+        }
+    }
+};
+
+
+},{}],32:[function(require,module,exports){
+'use strict';
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var slice = Array.prototype.slice;
+var toStr = Object.prototype.toString;
+var funcType = '[object Function]';
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.call(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slice.call(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                args.concat(slice.call(arguments))
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        } else {
+            return target.apply(
+                that,
+                args.concat(slice.call(arguments))
+            );
+        }
+    };
+
+    var boundLength = Math.max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs.push('$' + i);
+    }
+
+    bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+},{}],33:[function(require,module,exports){
+'use strict';
+
+var implementation = require('./implementation');
+
+module.exports = Function.prototype.bind || implementation;
+
+},{"./implementation":32}],34:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports.geometry = geometry;
@@ -6176,7 +6608,7 @@ function rad(_) {
     return _ * Math.PI / 180;
 }
 
-},{"wgs84":158}],26:[function(require,module,exports){
+},{"wgs84":173}],35:[function(require,module,exports){
 module.exports = function flatten(list, depth) {
     return _flatten(list);
 
@@ -6196,7 +6628,7 @@ module.exports = function flatten(list, depth) {
     }
 };
 
-},{}],27:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var geojsonNormalize = require('geojson-normalize'),
     geojsonFlatten = require('geojson-flatten'),
     flatten = require('./flatten');
@@ -6212,7 +6644,7 @@ module.exports = function(_) {
     return coordinates;
 };
 
-},{"./flatten":26,"geojson-flatten":29,"geojson-normalize":30}],28:[function(require,module,exports){
+},{"./flatten":35,"geojson-flatten":38,"geojson-normalize":39}],37:[function(require,module,exports){
 var geojsonCoords = require('geojson-coords'),
     traverse = require('traverse'),
     extent = require('extent');
@@ -6242,7 +6674,7 @@ function getExtent(_) {
     return ext;
 }
 
-},{"extent":23,"geojson-coords":27,"traverse":153}],29:[function(require,module,exports){
+},{"extent":29,"geojson-coords":36,"traverse":167}],38:[function(require,module,exports){
 module.exports = flatten;
 
 function flatten(gj, up) {
@@ -6283,7 +6715,7 @@ function flatten(gj, up) {
     }
 }
 
-},{}],30:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = normalize;
 
 var types = {
@@ -6328,7 +6760,7 @@ function normalize(gj) {
     }
 }
 
-},{}],31:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function(count, type) {
     switch (type) {
         case 'point':
@@ -6347,7 +6779,7 @@ function feature(geom) {
 }
 function collection(f) { return { type: 'FeatureCollection', features: f }; }
 
-},{}],32:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var geojsonArea = require('geojson-area');
 
 module.exports = rewind;
@@ -6398,7 +6830,7 @@ function cw(_) {
     return geojsonArea.ring(_) >= 0;
 }
 
-},{"geojson-area":25}],33:[function(require,module,exports){
+},{"geojson-area":34}],42:[function(require,module,exports){
 var dsv = require('dsv');
 
 module.exports = function(_, delim) {
@@ -6425,7 +6857,7 @@ module.exports = function(_, delim) {
     }));
 };
 
-},{"dsv":21}],34:[function(require,module,exports){
+},{"dsv":23}],43:[function(require,module,exports){
 var jsonlint = require('jsonlint-lines');
 
 function hint(str) {
@@ -6744,8 +7176,8 @@ function hint(str) {
 
 module.exports.hint = hint;
 
-},{"jsonlint-lines":35}],35:[function(require,module,exports){
-(function (process){
+},{"jsonlint-lines":44}],44:[function(require,module,exports){
+(function (process){(function (){
 /* parser generated by jison 0.4.6 */
 /*
   Returns a Parser object of the following structure:
@@ -7400,8 +7832,8 @@ if (typeof module !== 'undefined' && require.main === module) {
   exports.main(process.argv.slice(1));
 }
 }
-}).call(this,require('_process'))
-},{"_process":92,"fs":10,"path":89}],36:[function(require,module,exports){
+}).call(this)}).call(this,require('_process'))
+},{"_process":106,"fs":12,"path":103}],45:[function(require,module,exports){
 var parseCSV = require('dsv').csv.parse;
 
 /**
@@ -7443,12 +7875,74 @@ function gtfs2geojson(gtfs) {
 
 module.exports = gtfs2geojson;
 
-},{"dsv":37}],37:[function(require,module,exports){
+},{"dsv":46}],46:[function(require,module,exports){
 
 
 module.exports = new Function("dsv.version = \"0.0.4\";\n\ndsv.tsv = dsv(\"\\t\");\ndsv.csv = dsv(\",\");\n\nfunction dsv(delimiter) {\n  var dsv = {},\n      reFormat = new RegExp(\"[\\\"\" + delimiter + \"\\n]\"),\n      delimiterCode = delimiter.charCodeAt(0);\n\n  dsv.parse = function(text, f) {\n    var o;\n    return dsv.parseRows(text, function(row, i) {\n      if (o) return o(row, i - 1);\n      var a = new Function(\"d\", \"return {\" + row.map(function(name, i) {\n        return JSON.stringify(name) + \": d[\" + i + \"]\";\n      }).join(\",\") + \"}\");\n      o = f ? function(row, i) { return f(a(row), i); } : a;\n    });\n  };\n\n  dsv.parseRows = function(text, f) {\n    var EOL = {}, // sentinel value for end-of-line\n        EOF = {}, // sentinel value for end-of-file\n        rows = [], // output rows\n        N = text.length,\n        I = 0, // current character index\n        n = 0, // the current line number\n        t, // the current token\n        eol; // is the current token followed by EOL?\n\n    function token() {\n      if (I >= N) return EOF; // special case: end of file\n      if (eol) return eol = false, EOL; // special case: end of line\n\n      // special case: quotes\n      var j = I;\n      if (text.charCodeAt(j) === 34) {\n        var i = j;\n        while (i++ < N) {\n          if (text.charCodeAt(i) === 34) {\n            if (text.charCodeAt(i + 1) !== 34) break;\n            ++i;\n          }\n        }\n        I = i + 2;\n        var c = text.charCodeAt(i + 1);\n        if (c === 13) {\n          eol = true;\n          if (text.charCodeAt(i + 2) === 10) ++I;\n        } else if (c === 10) {\n          eol = true;\n        }\n        return text.slice(j + 1, i).replace(/\"\"/g, \"\\\"\");\n      }\n\n      // common case: find next delimiter or newline\n      while (I < N) {\n        var c = text.charCodeAt(I++), k = 1;\n        if (c === 10) eol = true; // \\n\n        else if (c === 13) { eol = true; if (text.charCodeAt(I) === 10) ++I, ++k; } // \\r|\\r\\n\n        else if (c !== delimiterCode) continue;\n        return text.slice(j, I - k);\n      }\n\n      // special case: last token before EOF\n      return text.slice(j);\n    }\n\n    while ((t = token()) !== EOF) {\n      var a = [];\n      while (t !== EOL && t !== EOF) {\n        a.push(t);\n        t = token();\n      }\n      if (f && (a = f(a, n++)) == null) continue;\n      rows.push(a);\n    }\n\n    return rows;\n  };\n\n  dsv.format = function(rows) {\n    if (Array.isArray(rows[0])) return dsv.formatRows(rows); // deprecated; use formatRows\n    var fieldSet = {}, fields = [];\n\n    // Compute unique fields in order of discovery.\n    rows.forEach(function(row) {\n      for (var field in row) {\n        if (!(field in fieldSet)) {\n          fields.push(fieldSet[field] = field);\n        }\n      }\n    });\n\n    return [fields.map(formatValue).join(delimiter)].concat(rows.map(function(row) {\n      return fields.map(function(field) {\n        return formatValue(row[field]);\n      }).join(delimiter);\n    })).join(\"\\n\");\n  };\n\n  dsv.formatRows = function(rows) {\n    return rows.map(formatRow).join(\"\\n\");\n  };\n\n  function formatRow(row) {\n    return row.map(formatValue).join(delimiter);\n  }\n\n  function formatValue(text) {\n    return reFormat.test(text) ? \"\\\"\" + text.replace(/\\\"/g, \"\\\"\\\"\") + \"\\\"\" : text;\n  }\n\n  return dsv;\n}\n" + ";return dsv")();
 
-},{}],38:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
+(function (global){(function (){
+'use strict';
+
+var origSymbol = global.Symbol;
+var hasSymbolSham = require('./shams');
+
+module.exports = function hasNativeSymbols() {
+	if (typeof origSymbol !== 'function') { return false; }
+	if (typeof Symbol !== 'function') { return false; }
+	if (typeof origSymbol('foo') !== 'symbol') { return false; }
+	if (typeof Symbol('bar') !== 'symbol') { return false; }
+
+	return hasSymbolSham();
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./shams":48}],48:[function(require,module,exports){
+'use strict';
+
+/* eslint complexity: [2, 18], max-statements: [2, 33] */
+module.exports = function hasSymbols() {
+	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
+	if (typeof Symbol.iterator === 'symbol') { return true; }
+
+	var obj = {};
+	var sym = Symbol('test');
+	var symObj = Object(sym);
+	if (typeof sym === 'string') { return false; }
+
+	if (Object.prototype.toString.call(sym) !== '[object Symbol]') { return false; }
+	if (Object.prototype.toString.call(symObj) !== '[object Symbol]') { return false; }
+
+	// temp disabled per https://github.com/ljharb/object.assign/issues/17
+	// if (sym instanceof Symbol) { return false; }
+	// temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+	// if (!(symObj instanceof Symbol)) { return false; }
+
+	// if (typeof Symbol.prototype.toString !== 'function') { return false; }
+	// if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+	var symVal = 42;
+	obj[sym] = symVal;
+	for (sym in obj) { return false; } // eslint-disable-line no-restricted-syntax
+	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
+
+	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
+
+	var syms = Object.getOwnPropertySymbols(obj);
+	if (syms.length !== 1 || syms[0] !== sym) { return false; }
+
+	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
+
+	if (typeof Object.getOwnPropertyDescriptor === 'function') {
+		var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
+	}
+
+	return true;
+};
+
+},{}],49:[function(require,module,exports){
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -7534,9 +8028,42 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],39:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],40:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],51:[function(require,module,exports){
+'use strict';
+
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var toStr = Object.prototype.toString;
+
+var isStandardArguments = function isArguments(value) {
+	if (hasToStringTag && value && typeof value === 'object' && Symbol.toStringTag in value) {
+		return false;
+	}
+	return toStr.call(value) === '[object Arguments]';
+};
+
+var isLegacyArguments = function isArguments(value) {
+	if (isStandardArguments(value)) {
+		return true;
+	}
+	return value !== null &&
+		typeof value === 'object' &&
+		typeof value.length === 'number' &&
+		value.length >= 0 &&
+		toStr.call(value) !== '[object Array]' &&
+		toStr.call(value.callee) === '[object Function]';
+};
+
+var supportsStandardArguments = (function () {
+	return isStandardArguments(arguments);
+}());
+
+isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
+
+module.exports = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
+
+},{}],52:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -7559,7 +8086,106 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],41:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
+'use strict';
+
+var toStr = Object.prototype.toString;
+var fnToStr = Function.prototype.toString;
+var isFnRegex = /^\s*(?:function)?\*/;
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var getProto = Object.getPrototypeOf;
+var getGeneratorFunc = function () { // eslint-disable-line consistent-return
+	if (!hasToStringTag) {
+		return false;
+	}
+	try {
+		return Function('return function*() {}')();
+	} catch (e) {
+	}
+};
+var generatorFunc = getGeneratorFunc();
+var GeneratorFunction = generatorFunc ? getProto(generatorFunc) : {};
+
+module.exports = function isGeneratorFunction(fn) {
+	if (typeof fn !== 'function') {
+		return false;
+	}
+	if (isFnRegex.test(fnToStr.call(fn))) {
+		return true;
+	}
+	if (!hasToStringTag) {
+		var str = toStr.call(fn);
+		return str === '[object GeneratorFunction]';
+	}
+	return getProto(fn) === GeneratorFunction;
+};
+
+},{}],54:[function(require,module,exports){
+(function (global){(function (){
+'use strict';
+
+var forEach = require('foreach');
+var availableTypedArrays = require('available-typed-arrays');
+var callBound = require('es-abstract/helpers/callBound');
+
+var $toString = callBound('Object.prototype.toString');
+var hasSymbols = require('has-symbols')();
+var hasToStringTag = hasSymbols && typeof Symbol.toStringTag === 'symbol';
+
+var typedArrays = availableTypedArrays();
+
+var $indexOf = callBound('Array.prototype.indexOf', true) || function indexOf(array, value) {
+	for (var i = 0; i < array.length; i += 1) {
+		if (array[i] === value) {
+			return i;
+		}
+	}
+	return -1;
+};
+var $slice = callBound('String.prototype.slice');
+var toStrTags = {};
+var gOPD = require('es-abstract/helpers/getOwnPropertyDescriptor');
+var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
+if (hasToStringTag && gOPD && getPrototypeOf) {
+	forEach(typedArrays, function (typedArray) {
+		var arr = new global[typedArray]();
+		if (!(Symbol.toStringTag in arr)) {
+			throw new EvalError('this engine has support for Symbol.toStringTag, but ' + typedArray + ' does not have the property! Please report this.');
+		}
+		var proto = getPrototypeOf(arr);
+		var descriptor = gOPD(proto, Symbol.toStringTag);
+		if (!descriptor) {
+			var superProto = getPrototypeOf(proto);
+			descriptor = gOPD(superProto, Symbol.toStringTag);
+		}
+		toStrTags[typedArray] = descriptor.get;
+	});
+}
+
+var tryTypedArrays = function tryAllTypedArrays(value) {
+	var anyTrue = false;
+	forEach(toStrTags, function (getter, typedArray) {
+		if (!anyTrue) {
+			try {
+				anyTrue = getter.call(value) === typedArray;
+			} catch (e) { /**/ }
+		}
+	});
+	return anyTrue;
+};
+
+module.exports = function isTypedArray(value) {
+	if (!value || typeof value !== 'object') { return false; }
+	if (!hasToStringTag) {
+		var tag = $slice($toString(value), 8, -1);
+		return $indexOf(typedArrays, tag) > -1;
+	}
+	if (!gOPD) { return false; }
+	return tryTypedArrays(value);
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"available-typed-arrays":9,"es-abstract/helpers/callBound":26,"es-abstract/helpers/getOwnPropertyDescriptor":27,"foreach":31,"has-symbols":47}],55:[function(require,module,exports){
 'use strict';
 // private property
 var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -7631,7 +8257,7 @@ exports.decode = function(input, utf8) {
 
 };
 
-},{}],42:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 'use strict';
 function CompressedObject() {
     this.compressedSize = 0;
@@ -7661,7 +8287,7 @@ CompressedObject.prototype = {
 };
 module.exports = CompressedObject;
 
-},{}],43:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 'use strict';
 exports.STORE = {
     magic: "\x00\x00",
@@ -7676,7 +8302,7 @@ exports.STORE = {
 };
 exports.DEFLATE = require('./flate');
 
-},{"./flate":48}],44:[function(require,module,exports){
+},{"./flate":62}],58:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -7780,7 +8406,7 @@ module.exports = function crc32(input, crc) {
 };
 // vim: set shiftwidth=4 softtabstop=4:
 
-},{"./utils":61}],45:[function(require,module,exports){
+},{"./utils":75}],59:[function(require,module,exports){
 'use strict';
 var utils = require('./utils');
 
@@ -7889,7 +8515,7 @@ DataReader.prototype = {
 };
 module.exports = DataReader;
 
-},{"./utils":61}],46:[function(require,module,exports){
+},{"./utils":75}],60:[function(require,module,exports){
 'use strict';
 exports.base64 = false;
 exports.binary = false;
@@ -7902,7 +8528,7 @@ exports.comment = null;
 exports.unixPermissions = null;
 exports.dosPermissions = null;
 
-},{}],47:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 var utils = require('./utils');
 
@@ -8009,7 +8635,7 @@ exports.isRegExp = function (object) {
 };
 
 
-},{"./utils":61}],48:[function(require,module,exports){
+},{"./utils":75}],62:[function(require,module,exports){
 'use strict';
 var USE_TYPEDARRAY = (typeof Uint8Array !== 'undefined') && (typeof Uint16Array !== 'undefined') && (typeof Uint32Array !== 'undefined');
 
@@ -8027,7 +8653,7 @@ exports.uncompress =  function(input) {
     return pako.inflateRaw(input);
 };
 
-},{"pako":73}],49:[function(require,module,exports){
+},{"pako":87}],63:[function(require,module,exports){
 'use strict';
 
 var base64 = require('./base64');
@@ -8108,7 +8734,7 @@ JSZip.base64 = {
 JSZip.compressions = require('./compressions');
 module.exports = JSZip;
 
-},{"./base64":41,"./compressions":43,"./defaults":46,"./deprecatedPublicUtils":47,"./load":50,"./object":53,"./support":57}],50:[function(require,module,exports){
+},{"./base64":55,"./compressions":57,"./defaults":60,"./deprecatedPublicUtils":61,"./load":64,"./object":67,"./support":71}],64:[function(require,module,exports){
 'use strict';
 var base64 = require('./base64');
 var ZipEntries = require('./zipEntries');
@@ -8141,8 +8767,8 @@ module.exports = function(data, options) {
     return this;
 };
 
-},{"./base64":41,"./zipEntries":62}],51:[function(require,module,exports){
-(function (Buffer){
+},{"./base64":55,"./zipEntries":76}],65:[function(require,module,exports){
+(function (Buffer){(function (){
 'use strict';
 module.exports = function(data, encoding){
     return new Buffer(data, encoding);
@@ -8151,8 +8777,8 @@ module.exports.test = function(b){
     return Buffer.isBuffer(b);
 };
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":11}],52:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"buffer":13}],66:[function(require,module,exports){
 'use strict';
 var Uint8ArrayReader = require('./uint8ArrayReader');
 
@@ -8174,7 +8800,7 @@ NodeBufferReader.prototype.readData = function(size) {
 };
 module.exports = NodeBufferReader;
 
-},{"./uint8ArrayReader":58}],53:[function(require,module,exports){
+},{"./uint8ArrayReader":72}],67:[function(require,module,exports){
 'use strict';
 var support = require('./support');
 var utils = require('./utils');
@@ -9059,7 +9685,7 @@ var out = {
 };
 module.exports = out;
 
-},{"./base64":41,"./compressedObject":42,"./compressions":43,"./crc32":44,"./defaults":46,"./nodeBuffer":51,"./signature":54,"./stringWriter":56,"./support":57,"./uint8ArrayWriter":59,"./utf8":60,"./utils":61}],54:[function(require,module,exports){
+},{"./base64":55,"./compressedObject":56,"./compressions":57,"./crc32":58,"./defaults":60,"./nodeBuffer":65,"./signature":68,"./stringWriter":70,"./support":71,"./uint8ArrayWriter":73,"./utf8":74,"./utils":75}],68:[function(require,module,exports){
 'use strict';
 exports.LOCAL_FILE_HEADER = "PK\x03\x04";
 exports.CENTRAL_FILE_HEADER = "PK\x01\x02";
@@ -9068,7 +9694,7 @@ exports.ZIP64_CENTRAL_DIRECTORY_LOCATOR = "PK\x06\x07";
 exports.ZIP64_CENTRAL_DIRECTORY_END = "PK\x06\x06";
 exports.DATA_DESCRIPTOR = "PK\x07\x08";
 
-},{}],55:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 var DataReader = require('./dataReader');
 var utils = require('./utils');
@@ -9106,7 +9732,7 @@ StringReader.prototype.readData = function(size) {
 };
 module.exports = StringReader;
 
-},{"./dataReader":45,"./utils":61}],56:[function(require,module,exports){
+},{"./dataReader":59,"./utils":75}],70:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -9138,8 +9764,8 @@ StringWriter.prototype = {
 
 module.exports = StringWriter;
 
-},{"./utils":61}],57:[function(require,module,exports){
-(function (Buffer){
+},{"./utils":75}],71:[function(require,module,exports){
+(function (Buffer){(function (){
 'use strict';
 exports.base64 = true;
 exports.array = true;
@@ -9175,8 +9801,8 @@ else {
     }
 }
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":11}],58:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"buffer":13}],72:[function(require,module,exports){
 'use strict';
 var DataReader = require('./dataReader');
 
@@ -9225,7 +9851,7 @@ Uint8ArrayReader.prototype.readData = function(size) {
 };
 module.exports = Uint8ArrayReader;
 
-},{"./dataReader":45}],59:[function(require,module,exports){
+},{"./dataReader":59}],73:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -9263,7 +9889,7 @@ Uint8ArrayWriter.prototype = {
 
 module.exports = Uint8ArrayWriter;
 
-},{"./utils":61}],60:[function(require,module,exports){
+},{"./utils":75}],74:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -9472,7 +10098,7 @@ exports.utf8decode = function utf8decode(buf) {
 };
 // vim: set shiftwidth=4 softtabstop=4:
 
-},{"./nodeBuffer":51,"./support":57,"./utils":61}],61:[function(require,module,exports){
+},{"./nodeBuffer":65,"./support":71,"./utils":75}],75:[function(require,module,exports){
 'use strict';
 var support = require('./support');
 var compressions = require('./compressions');
@@ -9800,7 +10426,7 @@ exports.isRegExp = function (object) {
 };
 
 
-},{"./compressions":43,"./nodeBuffer":51,"./support":57}],62:[function(require,module,exports){
+},{"./compressions":57,"./nodeBuffer":65,"./support":71}],76:[function(require,module,exports){
 'use strict';
 var StringReader = require('./stringReader');
 var NodeBufferReader = require('./nodeBufferReader');
@@ -10023,7 +10649,7 @@ ZipEntries.prototype = {
 // }}} end of ZipEntries
 module.exports = ZipEntries;
 
-},{"./nodeBufferReader":52,"./object":53,"./signature":54,"./stringReader":55,"./support":57,"./uint8ArrayReader":58,"./utils":61,"./zipEntry":63}],63:[function(require,module,exports){
+},{"./nodeBufferReader":66,"./object":67,"./signature":68,"./stringReader":69,"./support":71,"./uint8ArrayReader":72,"./utils":75,"./zipEntry":77}],77:[function(require,module,exports){
 'use strict';
 var StringReader = require('./stringReader');
 var utils = require('./utils');
@@ -10335,7 +10961,7 @@ ZipEntry.prototype = {
 };
 module.exports = ZipEntry;
 
-},{"./compressedObject":42,"./object":53,"./stringReader":55,"./utils":61}],64:[function(require,module,exports){
+},{"./compressedObject":56,"./object":67,"./stringReader":69,"./utils":75}],78:[function(require,module,exports){
 var spherical = require('spherical'),
     geojsonArea = require('geojson-area');
 
@@ -10380,7 +11006,7 @@ module.exports.area = function(layer) {
     return geojsonArea(gj.geometry);
 };
 
-},{"geojson-area":65,"spherical":107}],65:[function(require,module,exports){
+},{"geojson-area":79,"spherical":121}],79:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports = function(_) {
@@ -10442,7 +11068,7 @@ function rad(_) {
     return _ * Math.PI / 180;
 }
 
-},{"wgs84":158}],66:[function(require,module,exports){
+},{"wgs84":173}],80:[function(require,module,exports){
 (function(window) {
 	var HAS_HASHCHANGE = (function() {
 		var doc_mode = window.documentMode;
@@ -10606,8 +11232,8 @@ function rad(_) {
 	};
 })(window);
 
-},{}],67:[function(require,module,exports){
-(function (global){
+},{}],81:[function(require,module,exports){
+(function (global){(function (){
 /**
  * marked - a markdown parser
  * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
@@ -11875,8 +12501,8 @@ if (typeof exports === 'object') {
   return this || (typeof window !== 'undefined' ? window : global);
 }());
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],68:[function(require,module,exports){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],82:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -11968,7 +12594,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],69:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 var _ = require("./lodash.custom.js");
 var rewind = require("geojson-rewind");
 
@@ -12564,8 +13190,8 @@ osmtogeojson.toGeojson = osmtogeojson;
 
 module.exports = osmtogeojson;
 
-},{"./lodash.custom.js":70,"./polygon_features.json":72,"geojson-rewind":71}],70:[function(require,module,exports){
-(function (global){
+},{"./lodash.custom.js":84,"./polygon_features.json":86,"geojson-rewind":85}],84:[function(require,module,exports){
+(function (global){(function (){
 /**
  * @license
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -14361,8 +14987,8 @@ module.exports = osmtogeojson;
 
 }.call(this));
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],71:[function(require,module,exports){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],85:[function(require,module,exports){
 var geojsonArea = require('geojson-area');
 
 module.exports = rewind;
@@ -14413,7 +15039,7 @@ function cw(_) {
     return geojsonArea.ring(_) >= 0;
 }
 
-},{"geojson-area":25}],72:[function(require,module,exports){
+},{"geojson-area":34}],86:[function(require,module,exports){
 module.exports={
     "building": true,
     "highway": {
@@ -14494,7 +15120,7 @@ module.exports={
     "area:highway": true,
     "craft": true
 }
-},{}],73:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 // Top level file is just a mixin of submodules & constants
 'use strict';
 
@@ -14510,7 +15136,7 @@ assign(pako, deflate, inflate, constants);
 
 module.exports = pako;
 
-},{"./lib/deflate":74,"./lib/inflate":75,"./lib/utils/common":76,"./lib/zlib/constants":79}],74:[function(require,module,exports){
+},{"./lib/deflate":88,"./lib/inflate":89,"./lib/utils/common":90,"./lib/zlib/constants":93}],88:[function(require,module,exports){
 'use strict';
 
 
@@ -14912,7 +15538,7 @@ exports.deflate = deflate;
 exports.deflateRaw = deflateRaw;
 exports.gzip = gzip;
 
-},{"./utils/common":76,"./utils/strings":77,"./zlib/deflate":81,"./zlib/messages":86,"./zlib/zstream":88}],75:[function(require,module,exports){
+},{"./utils/common":90,"./utils/strings":91,"./zlib/deflate":95,"./zlib/messages":100,"./zlib/zstream":102}],89:[function(require,module,exports){
 'use strict';
 
 
@@ -15332,7 +15958,7 @@ exports.inflate = inflate;
 exports.inflateRaw = inflateRaw;
 exports.ungzip  = inflate;
 
-},{"./utils/common":76,"./utils/strings":77,"./zlib/constants":79,"./zlib/gzheader":82,"./zlib/inflate":84,"./zlib/messages":86,"./zlib/zstream":88}],76:[function(require,module,exports){
+},{"./utils/common":90,"./utils/strings":91,"./zlib/constants":93,"./zlib/gzheader":96,"./zlib/inflate":98,"./zlib/messages":100,"./zlib/zstream":102}],90:[function(require,module,exports){
 'use strict';
 
 
@@ -15436,7 +16062,7 @@ exports.setTyped = function (on) {
 
 exports.setTyped(TYPED_OK);
 
-},{}],77:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 // String encode/decode helpers
 'use strict';
 
@@ -15623,7 +16249,7 @@ exports.utf8border = function (buf, max) {
   return (pos + _utf8len[buf[pos]] > max) ? pos : max;
 };
 
-},{"./common":76}],78:[function(require,module,exports){
+},{"./common":90}],92:[function(require,module,exports){
 'use strict';
 
 // Note: adler32 takes 12% for level 0 and 2% for level 6.
@@ -15657,7 +16283,7 @@ function adler32(adler, buf, len, pos) {
 
 module.exports = adler32;
 
-},{}],79:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 'use strict';
 
 
@@ -15709,7 +16335,7 @@ module.exports = {
   //Z_NULL:                 null // Use -1 or null inline, depending on var type
 };
 
-},{}],80:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 'use strict';
 
 // Note: we can't get significant speed boost here.
@@ -15752,7 +16378,7 @@ function crc32(crc, buf, len, pos) {
 
 module.exports = crc32;
 
-},{}],81:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 'use strict';
 
 var utils   = require('../utils/common');
@@ -17609,7 +18235,7 @@ exports.deflatePrime = deflatePrime;
 exports.deflateTune = deflateTune;
 */
 
-},{"../utils/common":76,"./adler32":78,"./crc32":80,"./messages":86,"./trees":87}],82:[function(require,module,exports){
+},{"../utils/common":90,"./adler32":92,"./crc32":94,"./messages":100,"./trees":101}],96:[function(require,module,exports){
 'use strict';
 
 
@@ -17651,7 +18277,7 @@ function GZheader() {
 
 module.exports = GZheader;
 
-},{}],83:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 'use strict';
 
 // See state defs from inflate.js
@@ -17979,7 +18605,7 @@ module.exports = function inflate_fast(strm, start) {
   return;
 };
 
-},{}],84:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 'use strict';
 
 
@@ -19519,7 +20145,7 @@ exports.inflateSyncPoint = inflateSyncPoint;
 exports.inflateUndermine = inflateUndermine;
 */
 
-},{"../utils/common":76,"./adler32":78,"./crc32":80,"./inffast":83,"./inftrees":85}],85:[function(require,module,exports){
+},{"../utils/common":90,"./adler32":92,"./crc32":94,"./inffast":97,"./inftrees":99}],99:[function(require,module,exports){
 'use strict';
 
 
@@ -19848,7 +20474,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
   return 0;
 };
 
-},{"../utils/common":76}],86:[function(require,module,exports){
+},{"../utils/common":90}],100:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -19863,7 +20489,7 @@ module.exports = {
   '-6':   'incompatible version' /* Z_VERSION_ERROR (-6) */
 };
 
-},{}],87:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 'use strict';
 
 
@@ -21067,7 +21693,7 @@ exports._tr_flush_block  = _tr_flush_block;
 exports._tr_tally = _tr_tally;
 exports._tr_align = _tr_align;
 
-},{"../utils/common":76}],88:[function(require,module,exports){
+},{"../utils/common":90}],102:[function(require,module,exports){
 'use strict';
 
 
@@ -21098,10 +21724,10 @@ function ZStream() {
 
 module.exports = ZStream;
 
-},{}],89:[function(require,module,exports){
-(function (process){
-// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
-// backported and transplited with Babel, with backwards-compat fixes
+},{}],103:[function(require,module,exports){
+(function (process){(function (){
+// 'path' module extracted from Node.js v8.11.1 (only the posix part)
+// transplited with Babel
 
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -21124,287 +21750,514 @@ module.exports = ZStream;
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
+'use strict';
 
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
+function assertPath(path) {
+  if (typeof path !== 'string') {
+    throw new TypeError('Path must be a string. Received ' + JSON.stringify(path));
   }
-
-  return parts;
 }
 
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
+// Resolves . and .. elements in a path with directory names
+function normalizeStringPosix(path, allowAboveRoot) {
+  var res = '';
+  var lastSegmentLength = 0;
+  var lastSlash = -1;
+  var dots = 0;
+  var code;
+  for (var i = 0; i <= path.length; ++i) {
+    if (i < path.length)
+      code = path.charCodeAt(i);
+    else if (code === 47 /*/*/)
       break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  if (path.length === 0) return '.';
-  var code = path.charCodeAt(0);
-  var hasRoot = code === 47 /*/*/;
-  var end = -1;
-  var matchedSlash = true;
-  for (var i = path.length - 1; i >= 1; --i) {
-    code = path.charCodeAt(i);
+    else
+      code = 47 /*/*/;
     if (code === 47 /*/*/) {
-        if (!matchedSlash) {
-          end = i;
-          break;
+      if (lastSlash === i - 1 || dots === 1) {
+        // NOOP
+      } else if (lastSlash !== i - 1 && dots === 2) {
+        if (res.length < 2 || lastSegmentLength !== 2 || res.charCodeAt(res.length - 1) !== 46 /*.*/ || res.charCodeAt(res.length - 2) !== 46 /*.*/) {
+          if (res.length > 2) {
+            var lastSlashIndex = res.lastIndexOf('/');
+            if (lastSlashIndex !== res.length - 1) {
+              if (lastSlashIndex === -1) {
+                res = '';
+                lastSegmentLength = 0;
+              } else {
+                res = res.slice(0, lastSlashIndex);
+                lastSegmentLength = res.length - 1 - res.lastIndexOf('/');
+              }
+              lastSlash = i;
+              dots = 0;
+              continue;
+            }
+          } else if (res.length === 2 || res.length === 1) {
+            res = '';
+            lastSegmentLength = 0;
+            lastSlash = i;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          if (res.length > 0)
+            res += '/..';
+          else
+            res = '..';
+          lastSegmentLength = 2;
         }
       } else {
-      // We saw the first non-path separator
-      matchedSlash = false;
+        if (res.length > 0)
+          res += '/' + path.slice(lastSlash + 1, i);
+        else
+          res = path.slice(lastSlash + 1, i);
+        lastSegmentLength = i - lastSlash - 1;
+      }
+      lastSlash = i;
+      dots = 0;
+    } else if (code === 46 /*.*/ && dots !== -1) {
+      ++dots;
+    } else {
+      dots = -1;
     }
   }
-
-  if (end === -1) return hasRoot ? '/' : '.';
-  if (hasRoot && end === 1) {
-    // return '//';
-    // Backwards-compat fix:
-    return '/';
-  }
-  return path.slice(0, end);
-};
-
-function basename(path) {
-  if (typeof path !== 'string') path = path + '';
-
-  var start = 0;
-  var end = -1;
-  var matchedSlash = true;
-  var i;
-
-  for (i = path.length - 1; i >= 0; --i) {
-    if (path.charCodeAt(i) === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          start = i + 1;
-          break;
-        }
-      } else if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // path component
-      matchedSlash = false;
-      end = i + 1;
-    }
-  }
-
-  if (end === -1) return '';
-  return path.slice(start, end);
+  return res;
 }
 
-// Uses a mixed approach for backwards-compatibility, as ext behavior changed
-// in new Node.js versions, so only basename() above is backported here
-exports.basename = function (path, ext) {
-  var f = basename(path);
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
+function _format(sep, pathObject) {
+  var dir = pathObject.dir || pathObject.root;
+  var base = pathObject.base || (pathObject.name || '') + (pathObject.ext || '');
+  if (!dir) {
+    return base;
   }
-  return f;
-};
+  if (dir === pathObject.root) {
+    return dir + base;
+  }
+  return dir + sep + base;
+}
 
-exports.extname = function (path) {
-  if (typeof path !== 'string') path = path + '';
-  var startDot = -1;
-  var startPart = 0;
-  var end = -1;
-  var matchedSlash = true;
-  // Track the state of characters (if any) we see before our first dot and
-  // after any path separator we find
-  var preDotState = 0;
-  for (var i = path.length - 1; i >= 0; --i) {
-    var code = path.charCodeAt(i);
-    if (code === 47 /*/*/) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          startPart = i + 1;
-          break;
-        }
+var posix = {
+  // path.resolve([from ...], to)
+  resolve: function resolve() {
+    var resolvedPath = '';
+    var resolvedAbsolute = false;
+    var cwd;
+
+    for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+      var path;
+      if (i >= 0)
+        path = arguments[i];
+      else {
+        if (cwd === undefined)
+          cwd = process.cwd();
+        path = cwd;
+      }
+
+      assertPath(path);
+
+      // Skip empty entries
+      if (path.length === 0) {
         continue;
       }
-    if (end === -1) {
-      // We saw the first non-path separator, mark this as the end of our
-      // extension
-      matchedSlash = false;
-      end = i + 1;
-    }
-    if (code === 46 /*.*/) {
-        // If this is our first dot, mark it as the start of our extension
-        if (startDot === -1)
-          startDot = i;
-        else if (preDotState !== 1)
-          preDotState = 1;
-    } else if (startDot !== -1) {
-      // We saw a non-dot and non-path separator before our dot, so we should
-      // have a good chance at having a non-empty extension
-      preDotState = -1;
-    }
-  }
 
-  if (startDot === -1 || end === -1 ||
-      // We saw a non-dot character immediately before the dot
-      preDotState === 0 ||
-      // The (right-most) trimmed path component is exactly '..'
-      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
-    return '';
-  }
-  return path.slice(startDot, end);
+      resolvedPath = path + '/' + resolvedPath;
+      resolvedAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    }
+
+    // At this point the path should be resolved to a full absolute path, but
+    // handle relative paths to be safe (might happen when process.cwd() fails)
+
+    // Normalize the path
+    resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
+
+    if (resolvedAbsolute) {
+      if (resolvedPath.length > 0)
+        return '/' + resolvedPath;
+      else
+        return '/';
+    } else if (resolvedPath.length > 0) {
+      return resolvedPath;
+    } else {
+      return '.';
+    }
+  },
+
+  normalize: function normalize(path) {
+    assertPath(path);
+
+    if (path.length === 0) return '.';
+
+    var isAbsolute = path.charCodeAt(0) === 47 /*/*/;
+    var trailingSeparator = path.charCodeAt(path.length - 1) === 47 /*/*/;
+
+    // Normalize the path
+    path = normalizeStringPosix(path, !isAbsolute);
+
+    if (path.length === 0 && !isAbsolute) path = '.';
+    if (path.length > 0 && trailingSeparator) path += '/';
+
+    if (isAbsolute) return '/' + path;
+    return path;
+  },
+
+  isAbsolute: function isAbsolute(path) {
+    assertPath(path);
+    return path.length > 0 && path.charCodeAt(0) === 47 /*/*/;
+  },
+
+  join: function join() {
+    if (arguments.length === 0)
+      return '.';
+    var joined;
+    for (var i = 0; i < arguments.length; ++i) {
+      var arg = arguments[i];
+      assertPath(arg);
+      if (arg.length > 0) {
+        if (joined === undefined)
+          joined = arg;
+        else
+          joined += '/' + arg;
+      }
+    }
+    if (joined === undefined)
+      return '.';
+    return posix.normalize(joined);
+  },
+
+  relative: function relative(from, to) {
+    assertPath(from);
+    assertPath(to);
+
+    if (from === to) return '';
+
+    from = posix.resolve(from);
+    to = posix.resolve(to);
+
+    if (from === to) return '';
+
+    // Trim any leading backslashes
+    var fromStart = 1;
+    for (; fromStart < from.length; ++fromStart) {
+      if (from.charCodeAt(fromStart) !== 47 /*/*/)
+        break;
+    }
+    var fromEnd = from.length;
+    var fromLen = fromEnd - fromStart;
+
+    // Trim any leading backslashes
+    var toStart = 1;
+    for (; toStart < to.length; ++toStart) {
+      if (to.charCodeAt(toStart) !== 47 /*/*/)
+        break;
+    }
+    var toEnd = to.length;
+    var toLen = toEnd - toStart;
+
+    // Compare paths to find the longest common path from root
+    var length = fromLen < toLen ? fromLen : toLen;
+    var lastCommonSep = -1;
+    var i = 0;
+    for (; i <= length; ++i) {
+      if (i === length) {
+        if (toLen > length) {
+          if (to.charCodeAt(toStart + i) === 47 /*/*/) {
+            // We get here if `from` is the exact base path for `to`.
+            // For example: from='/foo/bar'; to='/foo/bar/baz'
+            return to.slice(toStart + i + 1);
+          } else if (i === 0) {
+            // We get here if `from` is the root
+            // For example: from='/'; to='/foo'
+            return to.slice(toStart + i);
+          }
+        } else if (fromLen > length) {
+          if (from.charCodeAt(fromStart + i) === 47 /*/*/) {
+            // We get here if `to` is the exact base path for `from`.
+            // For example: from='/foo/bar/baz'; to='/foo/bar'
+            lastCommonSep = i;
+          } else if (i === 0) {
+            // We get here if `to` is the root.
+            // For example: from='/foo'; to='/'
+            lastCommonSep = 0;
+          }
+        }
+        break;
+      }
+      var fromCode = from.charCodeAt(fromStart + i);
+      var toCode = to.charCodeAt(toStart + i);
+      if (fromCode !== toCode)
+        break;
+      else if (fromCode === 47 /*/*/)
+        lastCommonSep = i;
+    }
+
+    var out = '';
+    // Generate the relative path based on the path difference between `to`
+    // and `from`
+    for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
+      if (i === fromEnd || from.charCodeAt(i) === 47 /*/*/) {
+        if (out.length === 0)
+          out += '..';
+        else
+          out += '/..';
+      }
+    }
+
+    // Lastly, append the rest of the destination (`to`) path that comes after
+    // the common path parts
+    if (out.length > 0)
+      return out + to.slice(toStart + lastCommonSep);
+    else {
+      toStart += lastCommonSep;
+      if (to.charCodeAt(toStart) === 47 /*/*/)
+        ++toStart;
+      return to.slice(toStart);
+    }
+  },
+
+  _makeLong: function _makeLong(path) {
+    return path;
+  },
+
+  dirname: function dirname(path) {
+    assertPath(path);
+    if (path.length === 0) return '.';
+    var code = path.charCodeAt(0);
+    var hasRoot = code === 47 /*/*/;
+    var end = -1;
+    var matchedSlash = true;
+    for (var i = path.length - 1; i >= 1; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          if (!matchedSlash) {
+            end = i;
+            break;
+          }
+        } else {
+        // We saw the first non-path separator
+        matchedSlash = false;
+      }
+    }
+
+    if (end === -1) return hasRoot ? '/' : '.';
+    if (hasRoot && end === 1) return '//';
+    return path.slice(0, end);
+  },
+
+  basename: function basename(path, ext) {
+    if (ext !== undefined && typeof ext !== 'string') throw new TypeError('"ext" argument must be a string');
+    assertPath(path);
+
+    var start = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i;
+
+    if (ext !== undefined && ext.length > 0 && ext.length <= path.length) {
+      if (ext.length === path.length && ext === path) return '';
+      var extIdx = ext.length - 1;
+      var firstNonSlashEnd = -1;
+      for (i = path.length - 1; i >= 0; --i) {
+        var code = path.charCodeAt(i);
+        if (code === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else {
+          if (firstNonSlashEnd === -1) {
+            // We saw the first non-path separator, remember this index in case
+            // we need it if the extension ends up not matching
+            matchedSlash = false;
+            firstNonSlashEnd = i + 1;
+          }
+          if (extIdx >= 0) {
+            // Try to match the explicit extension
+            if (code === ext.charCodeAt(extIdx)) {
+              if (--extIdx === -1) {
+                // We matched the extension, so mark this as the end of our path
+                // component
+                end = i;
+              }
+            } else {
+              // Extension does not match, so our result is the entire path
+              // component
+              extIdx = -1;
+              end = firstNonSlashEnd;
+            }
+          }
+        }
+      }
+
+      if (start === end) end = firstNonSlashEnd;else if (end === -1) end = path.length;
+      return path.slice(start, end);
+    } else {
+      for (i = path.length - 1; i >= 0; --i) {
+        if (path.charCodeAt(i) === 47 /*/*/) {
+            // If we reached a path separator that was not part of a set of path
+            // separators at the end of the string, stop now
+            if (!matchedSlash) {
+              start = i + 1;
+              break;
+            }
+          } else if (end === -1) {
+          // We saw the first non-path separator, mark this as the end of our
+          // path component
+          matchedSlash = false;
+          end = i + 1;
+        }
+      }
+
+      if (end === -1) return '';
+      return path.slice(start, end);
+    }
+  },
+
+  extname: function extname(path) {
+    assertPath(path);
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+    for (var i = path.length - 1; i >= 0; --i) {
+      var code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1)
+            startDot = i;
+          else if (preDotState !== 1)
+            preDotState = 1;
+      } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+        // We saw a non-dot character immediately before the dot
+        preDotState === 0 ||
+        // The (right-most) trimmed path component is exactly '..'
+        preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      return '';
+    }
+    return path.slice(startDot, end);
+  },
+
+  format: function format(pathObject) {
+    if (pathObject === null || typeof pathObject !== 'object') {
+      throw new TypeError('The "pathObject" argument must be of type Object. Received type ' + typeof pathObject);
+    }
+    return _format('/', pathObject);
+  },
+
+  parse: function parse(path) {
+    assertPath(path);
+
+    var ret = { root: '', dir: '', base: '', ext: '', name: '' };
+    if (path.length === 0) return ret;
+    var code = path.charCodeAt(0);
+    var isAbsolute = code === 47 /*/*/;
+    var start;
+    if (isAbsolute) {
+      ret.root = '/';
+      start = 1;
+    } else {
+      start = 0;
+    }
+    var startDot = -1;
+    var startPart = 0;
+    var end = -1;
+    var matchedSlash = true;
+    var i = path.length - 1;
+
+    // Track the state of characters (if any) we see before our first dot and
+    // after any path separator we find
+    var preDotState = 0;
+
+    // Get non-dir info
+    for (; i >= start; --i) {
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
+        }
+      if (end === -1) {
+        // We saw the first non-path separator, mark this as the end of our
+        // extension
+        matchedSlash = false;
+        end = i + 1;
+      }
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
+        // We saw a non-dot and non-path separator before our dot, so we should
+        // have a good chance at having a non-empty extension
+        preDotState = -1;
+      }
+    }
+
+    if (startDot === -1 || end === -1 ||
+    // We saw a non-dot character immediately before the dot
+    preDotState === 0 ||
+    // The (right-most) trimmed path component is exactly '..'
+    preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+      if (end !== -1) {
+        if (startPart === 0 && isAbsolute) ret.base = ret.name = path.slice(1, end);else ret.base = ret.name = path.slice(startPart, end);
+      }
+    } else {
+      if (startPart === 0 && isAbsolute) {
+        ret.name = path.slice(1, startDot);
+        ret.base = path.slice(1, end);
+      } else {
+        ret.name = path.slice(startPart, startDot);
+        ret.base = path.slice(startPart, end);
+      }
+      ret.ext = path.slice(startDot, end);
+    }
+
+    if (startPart > 0) ret.dir = path.slice(0, startPart - 1);else if (isAbsolute) ret.dir = '/';
+
+    return ret;
+  },
+
+  sep: '/',
+  delimiter: ':',
+  win32: null,
+  posix: null
 };
 
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
+posix.posix = posix;
 
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
+module.exports = posix;
 
-}).call(this,require('_process'))
-},{"_process":92}],90:[function(require,module,exports){
+}).call(this)}).call(this,require('_process'))
+},{"_process":106}],104:[function(require,module,exports){
 'use strict';
 
 /**
@@ -21559,7 +22412,7 @@ if (typeof module === 'object' && module.exports) {
     module.exports = polyline;
 }
 
-},{}],91:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = function (data) {
     var lines = data.split('\n'),
                 isNameLine = true,
@@ -21625,7 +22478,7 @@ module.exports = function (data) {
     return gj;
 };
 
-},{}],92:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -21811,7 +22664,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],93:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 /*
  * Given a querystring, return an object of that querystring's components.
  *
@@ -21844,7 +22697,7 @@ module.exports.qsString = function(obj, noencode) {
     }).join('&');
 };
 
-},{}],94:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function() {
   var slice = [].slice;
 
@@ -21926,7 +22779,7 @@ module.exports.qsString = function(obj, noencode) {
   else this.queue = queue;
 })();
 
-},{}],95:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = function(x, dims) {
     if (!dims) dims = 'NSEW';
     if (typeof x !== 'string') return null;
@@ -21940,11 +22793,11 @@ module.exports = function(x, dims) {
         ((m[4] && m[4] === 'S' || m[4] === 'W') ? -1 : 1);
 };
 
-},{}],96:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports.download = require('./src/download')
 module.exports.write = require('./src/write')
 module.exports.zip = require('./src/zip')
-},{"./src/download":97,"./src/write":105,"./src/zip":106}],97:[function(require,module,exports){
+},{"./src/download":111,"./src/write":119,"./src/zip":120}],111:[function(require,module,exports){
 var zip = require('./zip');
 
 module.exports = function(gj, options) {
@@ -21952,7 +22805,7 @@ module.exports = function(gj, options) {
     location.href = 'data:application/zip;base64,' + content;
 };
 
-},{"./zip":106}],98:[function(require,module,exports){
+},{"./zip":120}],112:[function(require,module,exports){
 module.exports.enlarge = function enlargeExtent(extent, pt) {
     if (pt[0] < extent.xmin) extent.xmin = pt[0];
     if (pt[0] > extent.xmax) extent.xmax = pt[0];
@@ -21978,7 +22831,7 @@ module.exports.blank = function() {
     };
 };
 
-},{}],99:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 var types = require('./types').jstypes;
 
 module.exports.geojson = geojson;
@@ -22008,7 +22861,7 @@ function obj(_) {
     return o;
 }
 
-},{"./types":104}],100:[function(require,module,exports){
+},{"./types":118}],114:[function(require,module,exports){
 module.exports.point = justType('Point', 'POINT');
 module.exports.line = justType('LineString', 'POLYLINE');
 module.exports.polygon = justType('Polygon', 'POLYGON');
@@ -22042,7 +22895,7 @@ function isType(t) {
     return function(f) { return f.geometry.type === t; };
 }
 
-},{}],101:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 var ext = require('./extent');
 
 module.exports.write = function writePoints(coordinates, extent, shpView, shxView) {
@@ -22089,7 +22942,7 @@ module.exports.shpLength = function(coordinates) {
     return coordinates.length * 28;
 };
 
-},{"./extent":98}],102:[function(require,module,exports){
+},{"./extent":112}],116:[function(require,module,exports){
 var ext = require('./extent');
 
 module.exports.write = function writePoints(geometries, extent, shpView, shxView, TYPE) {
@@ -22169,10 +23022,10 @@ function justCoords(coords, l) {
     }
 }
 
-},{"./extent":98}],103:[function(require,module,exports){
+},{"./extent":112}],117:[function(require,module,exports){
 module.exports = 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]';
 
-},{}],104:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports.geometries = {
     NULL: 0,
     POINT: 1,
@@ -22190,7 +23043,7 @@ module.exports.geometries = {
     MULTIPATCH: 31,
 };
 
-},{}],105:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 var types = require('./types'),
     dbf = require('dbf'),
     prj = require('./prj'),
@@ -22259,7 +23112,7 @@ function writeExtent(extent, view) {
     view.setFloat64(60, extent.ymax, true);
 }
 
-},{"./extent":98,"./fields":99,"./points":101,"./poly":102,"./prj":103,"./types":104,"assert":4,"dbf":16}],106:[function(require,module,exports){
+},{"./extent":112,"./fields":113,"./points":115,"./poly":116,"./prj":117,"./types":118,"assert":5,"dbf":18}],120:[function(require,module,exports){
 var write = require('./write'),
     geojson = require('./geojson'),
     prj = require('./prj'),
@@ -22293,7 +23146,7 @@ module.exports = function(gj, options) {
     return zip.generate({compression:'STORE'});
 };
 
-},{"./geojson":100,"./prj":103,"./write":105,"jszip":49}],107:[function(require,module,exports){
+},{"./geojson":114,"./prj":117,"./write":119,"jszip":63}],121:[function(require,module,exports){
 var wgs84 = require('wgs84');
 
 module.exports.heading = function(from, to) {
@@ -22347,7 +23200,7 @@ function deg(_) {
     return _ * (180 / Math.PI);
 }
 
-},{"wgs84":158}],108:[function(require,module,exports){
+},{"wgs84":173}],122:[function(require,module,exports){
 var engine = require('../src/store-engine')
 
 var storages = require('../storages/all')
@@ -22355,7 +23208,7 @@ var plugins = [require('../plugins/json2')]
 
 module.exports = engine.createStore(storages, plugins)
 
-},{"../plugins/json2":109,"../src/store-engine":111,"../storages/all":113}],109:[function(require,module,exports){
+},{"../plugins/json2":123,"../src/store-engine":125,"../storages/all":127}],123:[function(require,module,exports){
 module.exports = json2Plugin
 
 function json2Plugin() {
@@ -22363,7 +23216,7 @@ function json2Plugin() {
 	return {}
 }
 
-},{"./lib/json2":110}],110:[function(require,module,exports){
+},{"./lib/json2":124}],124:[function(require,module,exports){
 /* eslint-disable */
 
 //  json2.js
@@ -22872,7 +23725,7 @@ if (typeof JSON !== "object") {
         };
     }
 }());
-},{}],111:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 var util = require('./util')
 var slice = util.slice
 var pluck = util.pluck
@@ -23111,8 +23964,8 @@ function createStore(storages, plugins, namespace) {
 	return store
 }
 
-},{"./util":112}],112:[function(require,module,exports){
-(function (global){
+},{"./util":126}],126:[function(require,module,exports){
+(function (global){(function (){
 var assign = make_assign()
 var create = make_create()
 var trim = make_trim()
@@ -23232,8 +24085,8 @@ function isObject(val) {
 	return val && {}.toString.call(val) === '[object Object]'
 }
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],113:[function(require,module,exports){
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],127:[function(require,module,exports){
 module.exports = [
 	// Listed in order of usage preference
 	require('./localStorage'),
@@ -23244,7 +24097,7 @@ module.exports = [
 	require('./memoryStorage')
 ]
 
-},{"./cookieStorage":114,"./localStorage":115,"./memoryStorage":116,"./oldFF-globalStorage":117,"./oldIE-userDataStorage":118,"./sessionStorage":119}],114:[function(require,module,exports){
+},{"./cookieStorage":128,"./localStorage":129,"./memoryStorage":130,"./oldFF-globalStorage":131,"./oldIE-userDataStorage":132,"./sessionStorage":133}],128:[function(require,module,exports){
 // cookieStorage is useful Safari private browser mode, where localStorage
 // doesn't work but cookies do. This implementation is adopted from
 // https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage
@@ -23307,7 +24160,7 @@ function _has(key) {
 	return (new RegExp("(?:^|;\\s*)" + escape(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(doc.cookie)
 }
 
-},{"../src/util":112}],115:[function(require,module,exports){
+},{"../src/util":126}],129:[function(require,module,exports){
 var util = require('../src/util')
 var Global = util.Global
 
@@ -23347,7 +24200,7 @@ function clearAll() {
 	return localStorage().clear()
 }
 
-},{"../src/util":112}],116:[function(require,module,exports){
+},{"../src/util":126}],130:[function(require,module,exports){
 // memoryStorage is a useful last fallback to ensure that the store
 // is functions (meaning store.get(), store.set(), etc will all function).
 // However, stored values will not persist when the browser navigates to
@@ -23388,7 +24241,7 @@ function clearAll(key) {
 	memoryStorage = {}
 }
 
-},{}],117:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 // oldFF-globalStorage provides storage for Firefox
 // versions 6 and 7, where no localStorage, etc
 // is available.
@@ -23432,7 +24285,7 @@ function clearAll() {
 	})
 }
 
-},{"../src/util":112}],118:[function(require,module,exports){
+},{"../src/util":126}],132:[function(require,module,exports){
 // oldIE-userDataStorage provides storage for Internet Explorer
 // versions 6 and 7, where no localStorage, sessionStorage, etc
 // is available.
@@ -23561,7 +24414,7 @@ function _makeIEStorageElFunction() {
 	}
 }
 
-},{"../src/util":112}],119:[function(require,module,exports){
+},{"../src/util":126}],133:[function(require,module,exports){
 var util = require('../src/util')
 var Global = util.Global
 
@@ -23601,7 +24454,7 @@ function clearAll() {
 	return sessionStorage().clear()
 }
 
-},{"../src/util":112}],120:[function(require,module,exports){
+},{"../src/util":126}],134:[function(require,module,exports){
 module.exports.attr = attr;
 module.exports.tagClose = tagClose;
 module.exports.tag = tag;
@@ -23647,8 +24500,8 @@ function encode(_) {
         .replace(/"/g, '&quot;');
 }
 
-},{}],121:[function(require,module,exports){
-(function (process){
+},{}],135:[function(require,module,exports){
+(function (process){(function (){
 toGeoJSON = (function() {
     'use strict';
 
@@ -23885,8 +24738,8 @@ toGeoJSON = (function() {
 
 if (typeof module !== 'undefined') module.exports = toGeoJSON;
 
-}).call(this,require('_process'))
-},{"_process":92,"xmldom":9}],122:[function(require,module,exports){
+}).call(this)}).call(this,require('_process'))
+},{"_process":106,"xmldom":11}],136:[function(require,module,exports){
 var strxml = require('strxml'),
     tag = strxml.tag,
     encode = strxml.encode;
@@ -24083,7 +24936,7 @@ function pairs(_) {
     return o;
 }
 
-},{"strxml":120}],123:[function(require,module,exports){
+},{"strxml":134}],137:[function(require,module,exports){
 var type = require("./type"),
     topojson = require("../../");
 
@@ -24113,7 +24966,7 @@ module.exports = function(topology, propertiesById) {
 
 function noop() {}
 
-},{"../../":"topojson","./type":151}],124:[function(require,module,exports){
+},{"../../":"topojson","./type":165}],138:[function(require,module,exports){
 
 // Computes the bounding box of the specified hash of GeoJSON objects.
 module.exports = function(objects) {
@@ -24160,7 +25013,7 @@ module.exports = function(objects) {
   return [x0, y0, x1, y1];
 };
 
-},{}],125:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 exports.name = "cartesian";
 exports.formatDistance = formatDistance;
 exports.ringArea = ringArea;
@@ -24200,7 +25053,7 @@ function distance(x0, y0, x1, y1) {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-},{}],126:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 var type = require("./type"),
     systems = require("./coordinate-systems"),
     topojson = require("../../");
@@ -24291,7 +25144,7 @@ function clockwisePolygonSystem(ringArea, reverse) {
 
 function noop() {}
 
-},{"../../":"topojson","./coordinate-systems":128,"./type":151}],127:[function(require,module,exports){
+},{"../../":"topojson","./coordinate-systems":142,"./type":165}],141:[function(require,module,exports){
 // Given a hash of GeoJSON objects and an id function, invokes the id function
 // to compute a new id for each object that is a feature. The function is passed
 // the feature and is expected to return the new feature id, or null if the
@@ -24321,13 +25174,13 @@ module.exports = function(objects, id) {
   return objects;
 };
 
-},{}],128:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 module.exports = {
   cartesian: require("./cartesian"),
   spherical: require("./spherical")
 };
 
-},{"./cartesian":125,"./spherical":138}],129:[function(require,module,exports){
+},{"./cartesian":139,"./spherical":152}],143:[function(require,module,exports){
 // Given a TopoJSON topology in absolute (quantized) coordinates,
 // converts to fixed-point delta encoding.
 // This is a destructive operation that modifies the given topology!
@@ -24358,7 +25211,7 @@ module.exports = function(topology) {
   return topology;
 };
 
-},{}],130:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 var type = require("./type"),
     prune = require("./prune"),
     clockwise = require("./clockwise"),
@@ -24487,7 +25340,7 @@ function preserveNone() {
   return false;
 }
 
-},{"../../":"topojson","./clockwise":126,"./coordinate-systems":128,"./prune":134,"./type":151}],131:[function(require,module,exports){
+},{"../../":"topojson","./clockwise":140,"./coordinate-systems":142,"./prune":148,"./type":165}],145:[function(require,module,exports){
 // Given a hash of GeoJSON objects, replaces Features with geometry objects.
 // This is a destructive operation that modifies the input objects!
 module.exports = function(objects) {
@@ -24606,7 +25459,7 @@ module.exports = function(objects) {
   return objects;
 };
 
-},{}],132:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 var quantize = require("./quantize");
 
 module.exports = function(topology, Q0, Q1) {
@@ -24654,7 +25507,7 @@ module.exports = function(topology, Q0, Q1) {
   return topology;
 };
 
-},{"./quantize":135}],133:[function(require,module,exports){
+},{"./quantize":149}],147:[function(require,module,exports){
 var quantize = require("./quantize");
 
 module.exports = function(objects, bbox, Q0, Q1) {
@@ -24713,7 +25566,7 @@ module.exports = function(objects, bbox, Q0, Q1) {
   return q.transform;
 };
 
-},{"./quantize":135}],134:[function(require,module,exports){
+},{"./quantize":149}],148:[function(require,module,exports){
 module.exports = function(topology, options) {
   var verbose = false,
       objects = topology.objects,
@@ -24770,7 +25623,7 @@ module.exports = function(topology, options) {
 
 function noop() {}
 
-},{}],135:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 module.exports = function(dx, dy, kx, ky) {
 
   function quantizePoint(coordinates) {
@@ -24814,7 +25667,7 @@ module.exports = function(dx, dy, kx, ky) {
   };
 };
 
-},{}],136:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 var type = require("./type");
 
 module.exports = function(topology, options) {
@@ -24894,7 +25747,7 @@ module.exports = function(topology, options) {
 
 function noop() {}
 
-},{"./type":151}],137:[function(require,module,exports){
+},{"./type":165}],151:[function(require,module,exports){
 var topojson = require("../../"),
     systems = require("./coordinate-systems");
 
@@ -25003,7 +25856,7 @@ module.exports = function(topology, options) {
   return topology;
 };
 
-},{"../../":"topojson","./coordinate-systems":128}],138:[function(require,module,exports){
+},{"../../":"topojson","./coordinate-systems":142}],152:[function(require,module,exports){
 var π = Math.PI,
     π_4 = π / 4,
     radians = π / 180;
@@ -25084,7 +25937,7 @@ function haversin(x) {
   return (x = Math.sin(x / 2)) * x;
 }
 
-},{}],139:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 var type = require("./type");
 
 module.exports = function(objects, transform) {
@@ -25267,7 +26120,7 @@ module.exports = function(objects, transform) {
   }
 };
 
-},{"./type":151}],140:[function(require,module,exports){
+},{"./type":165}],154:[function(require,module,exports){
 var type = require("./type"),
     stitch = require("./stitch"),
     systems = require("./coordinate-systems"),
@@ -25380,7 +26233,7 @@ module.exports = function(objects, options) {
   return topology;
 };
 
-},{"./bounds":124,"./compute-id":127,"./coordinate-systems":128,"./delta":129,"./geomify":131,"./post-quantize":132,"./pre-quantize":133,"./stitch":139,"./topology/index":146,"./transform-properties":150,"./type":151}],141:[function(require,module,exports){
+},{"./bounds":138,"./compute-id":141,"./coordinate-systems":142,"./delta":143,"./geomify":145,"./post-quantize":146,"./pre-quantize":147,"./stitch":153,"./topology/index":160,"./transform-properties":164,"./type":165}],155:[function(require,module,exports){
 var join = require("./join");
 
 // Given an extracted (pre-)topology, cuts (or rotates) arcs so that all shared
@@ -25442,7 +26295,7 @@ function reverse(array, start, end) {
   }
 }
 
-},{"./join":147}],142:[function(require,module,exports){
+},{"./join":161}],156:[function(require,module,exports){
 var join = require("./join"),
     hashmap = require("./hashmap"),
     hashPoint = require("./point-hash"),
@@ -25628,7 +26481,7 @@ module.exports = function(topology) {
   return topology;
 };
 
-},{"./hashmap":144,"./join":147,"./point-equal":148,"./point-hash":149}],143:[function(require,module,exports){
+},{"./hashmap":158,"./join":161,"./point-equal":162,"./point-hash":163}],157:[function(require,module,exports){
 // Extracts the lines and rings from the specified hash of geometry objects.
 //
 // Returns an object with three properties:
@@ -25695,7 +26548,7 @@ module.exports = function(objects) {
   };
 };
 
-},{}],144:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 module.exports = function(size, hash, equal, keyType, keyEmpty, valueType) {
   if (arguments.length === 3) {
     keyType = valueType = Array;
@@ -25770,7 +26623,7 @@ module.exports = function(size, hash, equal, keyType, keyEmpty, valueType) {
   };
 };
 
-},{}],145:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 module.exports = function(size, hash, equal, type, empty) {
   if (arguments.length === 3) {
     type = Array;
@@ -25827,7 +26680,7 @@ module.exports = function(size, hash, equal, type, empty) {
   };
 };
 
-},{}],146:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 var hashmap = require("./hashmap"),
     extract = require("./extract"),
     cut = require("./cut"),
@@ -25897,7 +26750,7 @@ function equalArc(arcA, arcB) {
   return ia === ib && ja === jb;
 }
 
-},{"./cut":141,"./dedup":142,"./extract":143,"./hashmap":144}],147:[function(require,module,exports){
+},{"./cut":155,"./dedup":156,"./extract":157,"./hashmap":158}],161:[function(require,module,exports){
 var hashset = require("./hashset"),
     hashmap = require("./hashmap"),
     hashPoint = require("./point-hash"),
@@ -26012,12 +26865,12 @@ module.exports = function(topology) {
   return junctionByPoint;
 };
 
-},{"./hashmap":144,"./hashset":145,"./point-equal":148,"./point-hash":149}],148:[function(require,module,exports){
+},{"./hashmap":158,"./hashset":159,"./point-equal":162,"./point-hash":163}],162:[function(require,module,exports){
 module.exports = function(pointA, pointB) {
   return pointA[0] === pointB[0] && pointA[1] === pointB[1];
 };
 
-},{}],149:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 // TODO if quantized, use simpler Int32 hashing?
 
 var buffer = new ArrayBuffer(16),
@@ -26032,7 +26885,7 @@ module.exports = function(point) {
   return hash & 0x7fffffff;
 };
 
-},{}],150:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 // Given a hash of GeoJSON objects, transforms any properties on features using
 // the specified transform function. The function is invoked for each existing
 // property on the current feature, being passed the new properties hash, the
@@ -26077,7 +26930,7 @@ module.exports = function(objects, propertyTransform) {
   return objects;
 };
 
-},{}],151:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 module.exports = function(types) {
   for (var type in typeDefaults) {
     if (!(type in types)) {
@@ -26171,7 +27024,7 @@ var typeObjects = {
   FeatureCollection: 1
 };
 
-},{}],152:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 !function() {
   var topojson = {
     version: "1.6.8",
@@ -26705,7 +27558,7 @@ var typeObjects = {
   else this.topojson = topojson;
 }();
 
-},{}],153:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 var traverse = module.exports = function (obj) {
     return new Traverse(obj);
 };
@@ -27021,7 +27874,7 @@ var hasOwnProperty = Object.hasOwnProperty || function (obj, key) {
     return key in obj;
 };
 
-},{}],154:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 module.exports = function(request) {
     var parent = ce('div', 'treeui'),
         onclick = function() { };
@@ -27120,11 +27973,1062 @@ function ae(x, y, z) {
     return x.addEventListener(y, z);
 }
 
-},{}],155:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"dup":6}],156:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 arguments[4][7][0].apply(exports,arguments)
-},{"./support/isBuffer":155,"_process":92,"dup":7,"inherits":39}],157:[function(require,module,exports){
+},{"dup":7}],170:[function(require,module,exports){
+// Currently in sync with Node.js lib/internal/util/types.js
+// https://github.com/nodejs/node/commit/112cc7c27551254aa2b17098fb774867f05ed0d9
+
+'use strict';
+
+var isArgumentsObject = require('is-arguments');
+var isGeneratorFunction = require('is-generator-function');
+var whichTypedArray = require('which-typed-array');
+var isTypedArray = require('is-typed-array');
+
+function uncurryThis(f) {
+  return f.call.bind(f);
+}
+
+var BigIntSupported = typeof BigInt !== 'undefined';
+var SymbolSupported = typeof Symbol !== 'undefined';
+
+var ObjectToString = uncurryThis(Object.prototype.toString);
+
+var numberValue = uncurryThis(Number.prototype.valueOf);
+var stringValue = uncurryThis(String.prototype.valueOf);
+var booleanValue = uncurryThis(Boolean.prototype.valueOf);
+
+if (BigIntSupported) {
+  var bigIntValue = uncurryThis(BigInt.prototype.valueOf);
+}
+
+if (SymbolSupported) {
+  var symbolValue = uncurryThis(Symbol.prototype.valueOf);
+}
+
+function checkBoxedPrimitive(value, prototypeValueOf) {
+  if (typeof value !== 'object') {
+    return false;
+  }
+  try {
+    prototypeValueOf(value);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+exports.isArgumentsObject = isArgumentsObject;
+exports.isGeneratorFunction = isGeneratorFunction;
+exports.isTypedArray = isTypedArray;
+
+// Taken from here and modified for better browser support
+// https://github.com/sindresorhus/p-is-promise/blob/cda35a513bda03f977ad5cde3a079d237e82d7ef/index.js
+function isPromise(input) {
+	return (
+		(
+			typeof Promise !== 'undefined' &&
+			input instanceof Promise
+		) ||
+		(
+			input !== null &&
+			typeof input === 'object' &&
+			typeof input.then === 'function' &&
+			typeof input.catch === 'function'
+		)
+	);
+}
+exports.isPromise = isPromise;
+
+function isArrayBufferView(value) {
+  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
+    return ArrayBuffer.isView(value);
+  }
+
+  return (
+    isTypedArray(value) ||
+    isDataView(value)
+  );
+}
+exports.isArrayBufferView = isArrayBufferView;
+
+
+function isUint8Array(value) {
+  return whichTypedArray(value) === 'Uint8Array';
+}
+exports.isUint8Array = isUint8Array;
+
+function isUint8ClampedArray(value) {
+  return whichTypedArray(value) === 'Uint8ClampedArray';
+}
+exports.isUint8ClampedArray = isUint8ClampedArray;
+
+function isUint16Array(value) {
+  return whichTypedArray(value) === 'Uint16Array';
+}
+exports.isUint16Array = isUint16Array;
+
+function isUint32Array(value) {
+  return whichTypedArray(value) === 'Uint32Array';
+}
+exports.isUint32Array = isUint32Array;
+
+function isInt8Array(value) {
+  return whichTypedArray(value) === 'Int8Array';
+}
+exports.isInt8Array = isInt8Array;
+
+function isInt16Array(value) {
+  return whichTypedArray(value) === 'Int16Array';
+}
+exports.isInt16Array = isInt16Array;
+
+function isInt32Array(value) {
+  return whichTypedArray(value) === 'Int32Array';
+}
+exports.isInt32Array = isInt32Array;
+
+function isFloat32Array(value) {
+  return whichTypedArray(value) === 'Float32Array';
+}
+exports.isFloat32Array = isFloat32Array;
+
+function isFloat64Array(value) {
+  return whichTypedArray(value) === 'Float64Array';
+}
+exports.isFloat64Array = isFloat64Array;
+
+function isBigInt64Array(value) {
+  return whichTypedArray(value) === 'BigInt64Array';
+}
+exports.isBigInt64Array = isBigInt64Array;
+
+function isBigUint64Array(value) {
+  return whichTypedArray(value) === 'BigUint64Array';
+}
+exports.isBigUint64Array = isBigUint64Array;
+
+function isMapToString(value) {
+  return ObjectToString(value) === '[object Map]';
+}
+isMapToString.working = (
+  typeof Map !== 'undefined' &&
+  isMapToString(new Map())
+);
+
+function isMap(value) {
+  if (typeof Map === 'undefined') {
+    return false;
+  }
+
+  return isMapToString.working
+    ? isMapToString(value)
+    : value instanceof Map;
+}
+exports.isMap = isMap;
+
+function isSetToString(value) {
+  return ObjectToString(value) === '[object Set]';
+}
+isSetToString.working = (
+  typeof Set !== 'undefined' &&
+  isSetToString(new Set())
+);
+function isSet(value) {
+  if (typeof Set === 'undefined') {
+    return false;
+  }
+
+  return isSetToString.working
+    ? isSetToString(value)
+    : value instanceof Set;
+}
+exports.isSet = isSet;
+
+function isWeakMapToString(value) {
+  return ObjectToString(value) === '[object WeakMap]';
+}
+isWeakMapToString.working = (
+  typeof WeakMap !== 'undefined' &&
+  isWeakMapToString(new WeakMap())
+);
+function isWeakMap(value) {
+  if (typeof WeakMap === 'undefined') {
+    return false;
+  }
+
+  return isWeakMapToString.working
+    ? isWeakMapToString(value)
+    : value instanceof WeakMap;
+}
+exports.isWeakMap = isWeakMap;
+
+function isWeakSetToString(value) {
+  return ObjectToString(value) === '[object WeakSet]';
+}
+isWeakSetToString.working = (
+  typeof WeakSet !== 'undefined' &&
+  isWeakSetToString(new WeakSet())
+);
+function isWeakSet(value) {
+  return isWeakSetToString(value);
+}
+exports.isWeakSet = isWeakSet;
+
+function isArrayBufferToString(value) {
+  return ObjectToString(value) === '[object ArrayBuffer]';
+}
+isArrayBufferToString.working = (
+  typeof ArrayBuffer !== 'undefined' &&
+  isArrayBufferToString(new ArrayBuffer())
+);
+function isArrayBuffer(value) {
+  if (typeof ArrayBuffer === 'undefined') {
+    return false;
+  }
+
+  return isArrayBufferToString.working
+    ? isArrayBufferToString(value)
+    : value instanceof ArrayBuffer;
+}
+exports.isArrayBuffer = isArrayBuffer;
+
+function isDataViewToString(value) {
+  return ObjectToString(value) === '[object DataView]';
+}
+isDataViewToString.working = (
+  typeof ArrayBuffer !== 'undefined' &&
+  typeof DataView !== 'undefined' &&
+  isDataViewToString(new DataView(new ArrayBuffer(1), 0, 1))
+);
+function isDataView(value) {
+  if (typeof DataView === 'undefined') {
+    return false;
+  }
+
+  return isDataViewToString.working
+    ? isDataViewToString(value)
+    : value instanceof DataView;
+}
+exports.isDataView = isDataView;
+
+function isSharedArrayBufferToString(value) {
+  return ObjectToString(value) === '[object SharedArrayBuffer]';
+}
+isSharedArrayBufferToString.working = (
+  typeof SharedArrayBuffer !== 'undefined' &&
+  isSharedArrayBufferToString(new SharedArrayBuffer())
+);
+function isSharedArrayBuffer(value) {
+  if (typeof SharedArrayBuffer === 'undefined') {
+    return false;
+  }
+
+  return isSharedArrayBufferToString.working
+    ? isSharedArrayBufferToString(value)
+    : value instanceof SharedArrayBuffer;
+}
+exports.isSharedArrayBuffer = isSharedArrayBuffer;
+
+function isAsyncFunction(value) {
+  return ObjectToString(value) === '[object AsyncFunction]';
+}
+exports.isAsyncFunction = isAsyncFunction;
+
+function isMapIterator(value) {
+  return ObjectToString(value) === '[object Map Iterator]';
+}
+exports.isMapIterator = isMapIterator;
+
+function isSetIterator(value) {
+  return ObjectToString(value) === '[object Set Iterator]';
+}
+exports.isSetIterator = isSetIterator;
+
+function isGeneratorObject(value) {
+  return ObjectToString(value) === '[object Generator]';
+}
+exports.isGeneratorObject = isGeneratorObject;
+
+function isWebAssemblyCompiledModule(value) {
+  return ObjectToString(value) === '[object WebAssembly.Module]';
+}
+exports.isWebAssemblyCompiledModule = isWebAssemblyCompiledModule;
+
+function isNumberObject(value) {
+  return checkBoxedPrimitive(value, numberValue);
+}
+exports.isNumberObject = isNumberObject;
+
+function isStringObject(value) {
+  return checkBoxedPrimitive(value, stringValue);
+}
+exports.isStringObject = isStringObject;
+
+function isBooleanObject(value) {
+  return checkBoxedPrimitive(value, booleanValue);
+}
+exports.isBooleanObject = isBooleanObject;
+
+function isBigIntObject(value) {
+  return BigIntSupported && checkBoxedPrimitive(value, bigIntValue);
+}
+exports.isBigIntObject = isBigIntObject;
+
+function isSymbolObject(value) {
+  return SymbolSupported && checkBoxedPrimitive(value, symbolValue);
+}
+exports.isSymbolObject = isSymbolObject;
+
+function isBoxedPrimitive(value) {
+  return (
+    isNumberObject(value) ||
+    isStringObject(value) ||
+    isBooleanObject(value) ||
+    isBigIntObject(value) ||
+    isSymbolObject(value)
+  );
+}
+exports.isBoxedPrimitive = isBoxedPrimitive;
+
+function isAnyArrayBuffer(value) {
+  return typeof Uint8Array !== 'undefined' && (
+    isArrayBuffer(value) ||
+    isSharedArrayBuffer(value)
+  );
+}
+exports.isAnyArrayBuffer = isAnyArrayBuffer;
+
+['isProxy', 'isExternal', 'isModuleNamespaceObject'].forEach(function(method) {
+  Object.defineProperty(exports, method, {
+    enumerable: false,
+    value: function() {
+      throw new Error(method + ' is not supported in userland');
+    }
+  });
+});
+
+},{"is-arguments":51,"is-generator-function":53,"is-typed-array":54,"which-typed-array":174}],171:[function(require,module,exports){
+(function (process){(function (){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var getOwnPropertyDescriptors = Object.getOwnPropertyDescriptors ||
+  function getOwnPropertyDescriptors(obj) {
+    var keys = Object.keys(obj);
+    var descriptors = {};
+    for (var i = 0; i < keys.length; i++) {
+      descriptors[keys[i]] = Object.getOwnPropertyDescriptor(obj, keys[i]);
+    }
+    return descriptors;
+  };
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  if (typeof process !== 'undefined' && process.noDeprecation === true) {
+    return fn;
+  }
+
+  // Allow for deprecating things in the process of starting up.
+  if (typeof process === 'undefined') {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnvRegex = /^$/;
+
+if (process.env.NODE_DEBUG) {
+  var debugEnv = process.env.NODE_DEBUG;
+  debugEnv = debugEnv.replace(/[|\\{}()[\]^$+?.]/g, '\\$&')
+    .replace(/\*/g, '.*')
+    .replace(/,/g, '$|^')
+    .toUpperCase();
+  debugEnvRegex = new RegExp('^' + debugEnv + '$', 'i');
+}
+exports.debuglog = function(set) {
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (debugEnvRegex.test(set)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+exports.types = require('./support/types');
+
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+exports.types.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+exports.types.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+exports.types.isNativeError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+var kCustomPromisifiedSymbol = typeof Symbol !== 'undefined' ? Symbol('util.promisify.custom') : undefined;
+
+exports.promisify = function promisify(original) {
+  if (typeof original !== 'function')
+    throw new TypeError('The "original" argument must be of type Function');
+
+  if (kCustomPromisifiedSymbol && original[kCustomPromisifiedSymbol]) {
+    var fn = original[kCustomPromisifiedSymbol];
+    if (typeof fn !== 'function') {
+      throw new TypeError('The "util.promisify.custom" argument must be of type Function');
+    }
+    Object.defineProperty(fn, kCustomPromisifiedSymbol, {
+      value: fn, enumerable: false, writable: false, configurable: true
+    });
+    return fn;
+  }
+
+  function fn() {
+    var promiseResolve, promiseReject;
+    var promise = new Promise(function (resolve, reject) {
+      promiseResolve = resolve;
+      promiseReject = reject;
+    });
+
+    var args = [];
+    for (var i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+    args.push(function (err, value) {
+      if (err) {
+        promiseReject(err);
+      } else {
+        promiseResolve(value);
+      }
+    });
+
+    try {
+      original.apply(this, args);
+    } catch (err) {
+      promiseReject(err);
+    }
+
+    return promise;
+  }
+
+  Object.setPrototypeOf(fn, Object.getPrototypeOf(original));
+
+  if (kCustomPromisifiedSymbol) Object.defineProperty(fn, kCustomPromisifiedSymbol, {
+    value: fn, enumerable: false, writable: false, configurable: true
+  });
+  return Object.defineProperties(
+    fn,
+    getOwnPropertyDescriptors(original)
+  );
+}
+
+exports.promisify.custom = kCustomPromisifiedSymbol
+
+function callbackifyOnRejected(reason, cb) {
+  // `!reason` guard inspired by bluebird (Ref: https://goo.gl/t5IS6M).
+  // Because `null` is a special error value in callbacks which means "no error
+  // occurred", we error-wrap so the callback consumer can distinguish between
+  // "the promise rejected with null" or "the promise fulfilled with undefined".
+  if (!reason) {
+    var newReason = new Error('Promise was rejected with a falsy value');
+    newReason.reason = reason;
+    reason = newReason;
+  }
+  return cb(reason);
+}
+
+function callbackify(original) {
+  if (typeof original !== 'function') {
+    throw new TypeError('The "original" argument must be of type Function');
+  }
+
+  // We DO NOT return the promise as it gives the user a false sense that
+  // the promise is actually somehow related to the callback's execution
+  // and that the callback throwing will reject the promise.
+  function callbackified() {
+    var args = [];
+    for (var i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
+    }
+
+    var maybeCb = args.pop();
+    if (typeof maybeCb !== 'function') {
+      throw new TypeError('The last argument must be of type Function');
+    }
+    var self = this;
+    var cb = function() {
+      return maybeCb.apply(self, arguments);
+    };
+    // In true node style we process the callback on `nextTick` with all the
+    // implications (stack, `uncaughtException`, `async_hooks`)
+    original.apply(this, args)
+      .then(function(ret) { process.nextTick(cb.bind(null, null, ret)) },
+            function(rej) { process.nextTick(callbackifyOnRejected.bind(null, rej, cb)) });
+  }
+
+  Object.setPrototypeOf(callbackified, Object.getPrototypeOf(original));
+  Object.defineProperties(callbackified,
+                          getOwnPropertyDescriptors(original));
+  return callbackified;
+}
+exports.callbackify = callbackify;
+
+}).call(this)}).call(this,require('_process'))
+},{"./support/isBuffer":169,"./support/types":170,"_process":106,"inherits":50}],172:[function(require,module,exports){
 module.exports = parse;
 module.exports.parse = parse;
 module.exports.stringify = stringify;
@@ -27375,13 +29279,73 @@ function stringify(gj) {
     }
 }
 
-},{}],158:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 module.exports.RADIUS = 6378137;
 module.exports.FLATTENING = 1/298.257223563;
 module.exports.POLAR_RADIUS = 6356752.3142;
 
-},{}],159:[function(require,module,exports){
-(function (Buffer){
+},{}],174:[function(require,module,exports){
+(function (global){(function (){
+'use strict';
+
+var forEach = require('foreach');
+var availableTypedArrays = require('available-typed-arrays');
+var callBound = require('es-abstract/helpers/callBound');
+
+var $toString = callBound('Object.prototype.toString');
+var hasSymbols = require('has-symbols')();
+var hasToStringTag = hasSymbols && typeof Symbol.toStringTag === 'symbol';
+
+var typedArrays = availableTypedArrays();
+
+var $slice = callBound('String.prototype.slice');
+var toStrTags = {};
+var gOPD = require('es-abstract/helpers/getOwnPropertyDescriptor');
+var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
+if (hasToStringTag && gOPD && getPrototypeOf) {
+	forEach(typedArrays, function (typedArray) {
+		if (typeof global[typedArray] === 'function') {
+			var arr = new global[typedArray]();
+			if (!(Symbol.toStringTag in arr)) {
+				throw new EvalError('this engine has support for Symbol.toStringTag, but ' + typedArray + ' does not have the property! Please report this.');
+			}
+			var proto = getPrototypeOf(arr);
+			var descriptor = gOPD(proto, Symbol.toStringTag);
+			if (!descriptor) {
+				var superProto = getPrototypeOf(proto);
+				descriptor = gOPD(superProto, Symbol.toStringTag);
+			}
+			toStrTags[typedArray] = descriptor.get;
+		}
+	});
+}
+
+var tryTypedArrays = function tryAllTypedArrays(value) {
+	var foundName = false;
+	forEach(toStrTags, function (getter, typedArray) {
+		if (!foundName) {
+			try {
+				var name = getter.call(value);
+				if (name === typedArray) {
+					foundName = name;
+				}
+			} catch (e) {}
+		}
+	});
+	return foundName;
+};
+
+var isTypedArray = require('is-typed-array');
+
+module.exports = function whichTypedArray(value) {
+	if (!isTypedArray(value)) { return false; }
+	if (!hasToStringTag) { return $slice($toString(value), 8, -1); }
+	return tryTypedArrays(value);
+};
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"available-typed-arrays":9,"es-abstract/helpers/callBound":26,"es-abstract/helpers/getOwnPropertyDescriptor":27,"foreach":31,"has-symbols":47,"is-typed-array":54}],175:[function(require,module,exports){
+(function (Buffer){(function (){
 module.exports = BinaryReader;
 
 function BinaryReader(buffer, isBigEndian) {
@@ -27430,9 +29394,9 @@ BinaryReader.prototype.readVarInt = function () {
     return result;
 };
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":11}],160:[function(require,module,exports){
-(function (Buffer){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"buffer":13}],176:[function(require,module,exports){
+(function (Buffer){(function (){
 module.exports = BinaryWriter;
 
 function BinaryWriter(size, allowResize) {
@@ -27499,9 +29463,9 @@ BinaryWriter.prototype.ensureSize = function (size) {
     }
 };
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":11}],161:[function(require,module,exports){
-(function (Buffer){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"buffer":13}],177:[function(require,module,exports){
+(function (Buffer){(function (){
 module.exports = Geometry;
 
 var Types = require('./types');
@@ -27880,8 +29844,8 @@ Geometry.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":40,"./binaryreader":159,"./binarywriter":160,"./geometrycollection":162,"./linestring":163,"./multilinestring":164,"./multipoint":165,"./multipolygon":166,"./point":167,"./polygon":168,"./types":169,"./wktparser":170,"./zigzag.js":172}],162:[function(require,module,exports){
+}).call(this)}).call(this,{"isBuffer":require("../../is-buffer/index.js")})
+},{"../../is-buffer/index.js":52,"./binaryreader":175,"./binarywriter":176,"./geometrycollection":178,"./linestring":179,"./multilinestring":180,"./multipoint":181,"./multipolygon":182,"./point":183,"./polygon":184,"./types":185,"./wktparser":186,"./zigzag.js":188}],178:[function(require,module,exports){
 module.exports = GeometryCollection;
 
 var util = require('util');
@@ -28051,7 +30015,7 @@ GeometryCollection.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./types":169,"util":156}],163:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./types":185,"util":171}],179:[function(require,module,exports){
 module.exports = LineString;
 
 var util = require('util');
@@ -28230,7 +30194,7 @@ LineString.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./point":167,"./types":169,"util":156}],164:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./point":183,"./types":185,"util":171}],180:[function(require,module,exports){
 module.exports = MultiLineString;
 
 var util = require('util');
@@ -28420,7 +30384,7 @@ MultiLineString.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./linestring":163,"./point":167,"./types":169,"util":156}],165:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./linestring":179,"./point":183,"./types":185,"util":171}],181:[function(require,module,exports){
 module.exports = MultiPoint;
 
 var util = require('util');
@@ -28593,7 +30557,7 @@ MultiPoint.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./point":167,"./types":169,"util":156}],166:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./point":183,"./types":185,"util":171}],182:[function(require,module,exports){
 module.exports = MultiPolygon;
 
 var util = require('util');
@@ -28820,7 +30784,7 @@ MultiPolygon.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./point":167,"./polygon":168,"./types":169,"util":156}],167:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./point":183,"./polygon":184,"./types":185,"util":171}],183:[function(require,module,exports){
 module.exports = Point;
 
 var util = require('util');
@@ -29038,7 +31002,7 @@ Point.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./types":169,"./zigzag.js":172,"util":156}],168:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./types":185,"./zigzag.js":188,"util":171}],184:[function(require,module,exports){
 module.exports = Polygon;
 
 var util = require('util');
@@ -29327,7 +31291,7 @@ Polygon.prototype.toGeoJSON = function (options) {
     return geoJSON;
 };
 
-},{"./binarywriter":160,"./geometry":161,"./point":167,"./types":169,"util":156}],169:[function(require,module,exports){
+},{"./binarywriter":176,"./geometry":177,"./point":183,"./types":185,"util":171}],185:[function(require,module,exports){
 module.exports = {
     wkt: {
         Point: 'POINT',
@@ -29358,7 +31322,7 @@ module.exports = {
     }
 };
 
-},{}],170:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 module.exports = WktParser;
 
 var Types = require('./types');
@@ -29484,7 +31448,7 @@ WktParser.prototype.skipWhitespaces = function () {
         this.position++;
 };
 
-},{"./point":167,"./types":169}],171:[function(require,module,exports){
+},{"./point":183,"./types":185}],187:[function(require,module,exports){
 exports.Types = require('./types');
 exports.Geometry = require('./geometry');
 exports.Point = require('./point');
@@ -29494,7 +31458,7 @@ exports.MultiPoint = require('./multipoint');
 exports.MultiLineString = require('./multilinestring');
 exports.MultiPolygon = require('./multipolygon');
 exports.GeometryCollection = require('./geometrycollection');
-},{"./geometry":161,"./geometrycollection":162,"./linestring":163,"./multilinestring":164,"./multipoint":165,"./multipolygon":166,"./point":167,"./polygon":168,"./types":169}],172:[function(require,module,exports){
+},{"./geometry":177,"./geometrycollection":178,"./linestring":179,"./multilinestring":180,"./multipoint":181,"./multipolygon":182,"./point":183,"./polygon":184,"./types":185}],188:[function(require,module,exports){
 module.exports = {
     encode: function (value) {
         return (value << 1) ^ (value >> 31);
@@ -29504,7 +31468,7 @@ module.exports = {
     }
 };
 
-},{}],173:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 module.exports = extend
 
 function extend() {
@@ -29523,10 +31487,10 @@ function extend() {
     return target
 }
 
-},{}],174:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 module.exports = function(hostname) {
     // Settings for geojson.io
-    L.accessToken = 'pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw';
+    L.accessToken = 'pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg';
     // if (hostname === 'geojson.io') {
     //     L.mapbox.config.FORCE_HTTPS = true;
     //     return {
@@ -29548,7 +31512,7 @@ module.exports = function(hostname) {
     // }
 };
 
-},{}],175:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 module.exports = api;
 
 function api(context) {
@@ -29591,7 +31555,7 @@ function api(context) {
     d3.rebind(window.api, context.dispatch, 'on');
 }
 
-},{}],176:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 var clone = require('clone'),
     xtend = require('xtend'),
     config = require('../config.js')(location.hostname),
@@ -29882,7 +31846,7 @@ module.exports = function(context) {
     return data;
 };
 
-},{"../config.js":174,"../source/gist":193,"../source/github":194,"../source/local":195,"clone":13,"xtend":173}],177:[function(require,module,exports){
+},{"../config.js":190,"../source/gist":209,"../source/github":210,"../source/local":211,"clone":15,"xtend":189}],193:[function(require,module,exports){
 var qs = require('qs-hash'),
     zoomextent = require('../lib/zoomextent'),
     flash = require('../ui/flash');
@@ -29968,7 +31932,7 @@ module.exports = function(context) {
     };
 };
 
-},{"../lib/zoomextent":189,"../ui/flash":199,"qs-hash":93}],178:[function(require,module,exports){
+},{"../lib/zoomextent":205,"../ui/flash":215,"qs-hash":107}],194:[function(require,module,exports){
 var zoomextent = require('../lib/zoomextent'),
     qs = require('qs-hash');
 
@@ -30010,7 +31974,7 @@ module.exports = function(context) {
     }
 };
 
-},{"../lib/zoomextent":189,"qs-hash":93}],179:[function(require,module,exports){
+},{"../lib/zoomextent":205,"qs-hash":107}],195:[function(require,module,exports){
 var config = require('../config.js')(location.hostname);
 
 module.exports = function(context) {
@@ -30054,7 +32018,7 @@ module.exports = function(context) {
     return repo;
 };
 
-},{"../config.js":174}],180:[function(require,module,exports){
+},{"../config.js":190}],196:[function(require,module,exports){
 var qs = require('qs-hash'),
     xtend = require('xtend');
 
@@ -30121,7 +32085,7 @@ module.exports = function(context) {
     return router;
 };
 
-},{"qs-hash":93,"xtend":173}],181:[function(require,module,exports){
+},{"qs-hash":107,"xtend":189}],197:[function(require,module,exports){
 var config = require('../config.js')(location.hostname);
 
 module.exports = function(context) {
@@ -30209,7 +32173,7 @@ module.exports = function(context) {
     return user;
 };
 
-},{"../config.js":174}],182:[function(require,module,exports){
+},{"../config.js":190}],198:[function(require,module,exports){
 var ui = require('./ui'),
     map = require('./ui/map'),
     data = require('./core/data'),
@@ -30245,7 +32209,7 @@ function geojsonIO() {
 }
 
 
-},{"./core/api":175,"./core/data":176,"./core/loader":177,"./core/recovery":178,"./core/repo":179,"./core/router":180,"./core/user":181,"./ui":196,"./ui/map":201,"store":108}],183:[function(require,module,exports){
+},{"./core/api":191,"./core/data":192,"./core/loader":193,"./core/recovery":194,"./core/repo":195,"./core/router":196,"./core/user":197,"./ui":212,"./ui/map":217,"store":122}],199:[function(require,module,exports){
 var qs = require('qs-hash');
 require('leaflet-hash');
 
@@ -30284,8 +32248,8 @@ L.Hash.prototype.formatHash = function(map) {
                 return '#' + qs.qsString(query);
 };
 
-},{"leaflet-hash":66,"qs-hash":93}],184:[function(require,module,exports){
-(function (Buffer){
+},{"leaflet-hash":80,"qs-hash":107}],200:[function(require,module,exports){
+(function (Buffer){(function (){
 var escape = require('escape-html'),
     geojsonRandom = require('geojson-random'),
     geojsonExtent = require('geojson-extent'),
@@ -30378,8 +32342,8 @@ module.exports.wkxString = function(context) {
     }
 };
 
-}).call(this,require("buffer").Buffer)
-},{"../lib/zoomextent":189,"buffer":11,"escape-html":22,"geojson-extent":28,"geojson-flatten":29,"geojson-random":31,"polyline":90,"wkx":171}],185:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"../lib/zoomextent":205,"buffer":13,"escape-html":28,"geojson-extent":37,"geojson-flatten":38,"geojson-random":40,"polyline":104,"wkx":187}],201:[function(require,module,exports){
 module.exports = function(context) {
     return function(e) {
         var sel = d3.select(e.popup._contentNode);
@@ -30443,7 +32407,7 @@ module.exports = function(context) {
     };
 };
 
-},{}],186:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 var topojson = require('topojson'),
     toGeoJSON = require('togeojson'),
     gtfs2geojson = require('gtfs2geojson'),
@@ -30635,7 +32599,7 @@ function readFile(f, text, callback) {
     }
 }
 
-},{"csv2geojson":14,"geojson-normalize":30,"gtfs2geojson":36,"osmtogeojson":69,"polytogeojson":91,"togeojson":121,"topojson":"topojson"}],187:[function(require,module,exports){
+},{"csv2geojson":16,"geojson-normalize":39,"gtfs2geojson":45,"osmtogeojson":83,"polytogeojson":105,"togeojson":135,"topojson":"topojson"}],203:[function(require,module,exports){
 module.exports = function(map, feature, bounds) {
     var zoomLevel;
 
@@ -30647,7 +32611,7 @@ module.exports = function(map, feature, bounds) {
     }
 };
 
-},{}],188:[function(require,module,exports){
+},{}],204:[function(require,module,exports){
 var geojsonhint = require('geojsonhint');
 
 module.exports = function(callback) {
@@ -30708,14 +32672,14 @@ module.exports = function(callback) {
     };
 };
 
-},{"geojsonhint":34}],189:[function(require,module,exports){
+},{"geojsonhint":43}],205:[function(require,module,exports){
 module.exports = function(context) {
     var bounds = context.mapLayer.getBounds();
     if (bounds.isValid()) context.map.fitBounds(bounds);
 };
 
-},{}],190:[function(require,module,exports){
-(function (Buffer){
+},{}],206:[function(require,module,exports){
+(function (Buffer){(function (){
 
 var marked = require('marked');
 
@@ -30737,8 +32701,8 @@ module.exports = function(context) {
     return render;
 };
 
-}).call(this,require("buffer").Buffer)
-},{"buffer":11,"marked":67}],191:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"buffer":13,"marked":81}],207:[function(require,module,exports){
 var validate = require('../lib/validate'),
     zoomextent = require('../lib/zoomextent'),
     saver = require('../ui/saver.js');
@@ -30803,7 +32767,7 @@ module.exports = function(context) {
     return render;
 };
 
-},{"../lib/validate":188,"../lib/zoomextent":189,"../ui/saver.js":205}],192:[function(require,module,exports){
+},{"../lib/validate":204,"../lib/zoomextent":205,"../ui/saver.js":221}],208:[function(require,module,exports){
 var metatable = require('d3-metatable')(d3),
     smartZoom = require('../lib/smartzoom.js');
 
@@ -30875,7 +32839,7 @@ module.exports = function(context) {
     return render;
 };
 
-},{"../lib/smartzoom.js":187,"d3-metatable":15}],193:[function(require,module,exports){
+},{"../lib/smartzoom.js":203,"d3-metatable":17}],209:[function(require,module,exports){
 
 var tmpl = "<!DOCTYPE html>\n<html>\n<head>\n  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />\n  <style>\n  body { margin:0; padding:0; }\n  #map { position:absolute; top:0; bottom:0; width:100%; }\n  .marker-properties {\n    border-collapse:collapse;\n    font-size:11px;\n    border:1px solid #eee;\n    margin:0;\n}\n.marker-properties th {\n    white-space:nowrap;\n    border:1px solid #eee;\n    padding:5px 10px;\n}\n.marker-properties td {\n    border:1px solid #eee;\n    padding:5px 10px;\n}\n.marker-properties tr:last-child td,\n.marker-properties tr:last-child th {\n    border-bottom:none;\n}\n.marker-properties tr:nth-child(even) th,\n.marker-properties tr:nth-child(even) td {\n    background-color:#f7f7f7;\n}\n  </style>\n  <script src='//api.tiles.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>\n  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js' ></script>\n  <link href='//api.tiles.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />\n</head>\n<body>\n<div id='map'></div>\n<script type='text/javascript'>\nL.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXFhYTA2bTMyeW44ZG0ybXBkMHkifQ.gUGbDOPUN1v1fTs5SeOR4A';\nvar map = L.mapbox.map('map');\n\nL.mapbox.tileLayer('mapbox.streets').addTo(map);\n\n$.getJSON('map.geojson', function(geojson) {\n    var geojsonLayer = L.mapbox.featureLayer(geojson).addTo(map);\n    var bounds = geojsonLayer.getBounds();\n    if (bounds.isValid()) {\n        map.fitBounds(geojsonLayer.getBounds());\n    } else {\n        map.setView([0, 0], 2);\n    }\n    geojsonLayer.eachLayer(function(l) {\n        showProperties(l);\n    });\n});\n\nfunction showProperties(l) {\n    var properties = l.toGeoJSON().properties;\n    var table = document.createElement('table');\n    table.setAttribute('class', 'marker-properties display')\n    for (var key in properties) {\n        var tr = createTableRows(key, properties[key]);\n        table.appendChild(tr);\n    }\n    if (table) l.bindPopup(table);\n}\n\nfunction createTableRows(key, value) {\n    var tr = document.createElement('tr');\n    var th = document.createElement('th');\n    var td = document.createElement('td');\n    key = document.createTextNode(key);\n    value = document.createTextNode(value);\n    th.appendChild(key);\n    td.appendChild(value);\n    tr.appendChild(th);\n    tr.appendChild(td);\n    return tr\n}\n\n</script>\n</body>\n</html>\n";
 
@@ -30989,7 +32953,7 @@ function loadRaw(url, context, callback) {
     function onError(err) { callback(err, null); }
 }
 
-},{"../config.js":174}],194:[function(require,module,exports){
+},{"../config.js":190}],210:[function(require,module,exports){
 module.exports.save = save;
 module.exports.load = load;
 module.exports.loadRaw = loadRaw;
@@ -31121,7 +33085,7 @@ function shaUrl(parts, sha) {
         '/git/blobs/' + sha;
 }
 
-},{"../config.js":174}],195:[function(require,module,exports){
+},{"../config.js":190}],211:[function(require,module,exports){
 try {
     
 } catch(e) {
@@ -31146,7 +33110,7 @@ function save(context, callback) {
     });
 }
 
-},{}],196:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 var buttons = require('./ui/mode_buttons'),
     file_bar = require('./ui/file_bar'),
     dnd = require('./ui/dnd'),
@@ -31231,7 +33195,7 @@ function ui(context) {
     };
 }
 
-},{"./ui/dnd":197,"./ui/file_bar":198,"./ui/layer_switch":200,"./ui/mode_buttons":204,"./ui/user":207}],197:[function(require,module,exports){
+},{"./ui/dnd":213,"./ui/file_bar":214,"./ui/layer_switch":216,"./ui/mode_buttons":220,"./ui/user":223}],213:[function(require,module,exports){
 var readDrop = require('../lib/readfile.js').readDrop,
     flash = require('./flash.js'),
     zoomextent = require('../lib/zoomextent');
@@ -31275,7 +33239,7 @@ module.exports = function(context) {
     }
 };
 
-},{"../lib/readfile.js":186,"../lib/zoomextent":189,"./flash.js":199}],198:[function(require,module,exports){
+},{"../lib/readfile.js":202,"../lib/zoomextent":205,"./flash.js":215}],214:[function(require,module,exports){
 var shpwrite = require('shp-write'),
     clone = require('clone'),
     geojson2dsv = require('geojson2dsv'),
@@ -31860,7 +33824,7 @@ module.exports = function fileBar(context) {
     return bar;
 };
 
-},{"../config.js":174,"../lib/meta.js":184,"../lib/readfile":186,"../lib/zoomextent":189,"../ui/saver.js":205,"./flash":199,"./modal.js":203,"./share":206,"@mapbox/gist-map-browser":2,"@mapbox/github-file-browser":3,"clone":13,"filesaver.js":24,"geojson-normalize":30,"geojson2dsv":33,"shp-write":96,"tokml":122,"topojson":"topojson","wellknown":157}],199:[function(require,module,exports){
+},{"../config.js":190,"../lib/meta.js":200,"../lib/readfile":202,"../lib/zoomextent":205,"../ui/saver.js":221,"./flash":215,"./modal.js":219,"./share":222,"@mapbox/gist-map-browser":2,"@mapbox/github-file-browser":3,"clone":15,"filesaver.js":30,"geojson-normalize":39,"geojson2dsv":42,"shp-write":110,"tokml":136,"topojson":"topojson","wellknown":172}],215:[function(require,module,exports){
 var message = require('./message');
 
 module.exports = flash;
@@ -31882,7 +33846,7 @@ function flash(selection, txt) {
     return msg;
 }
 
-},{"./message":202}],200:[function(require,module,exports){
+},{"./message":218}],216:[function(require,module,exports){
 
 module.exports = function(context) {
 
@@ -32046,7 +34010,7 @@ module.exports = function(context) {
                     // Topo: L.tileLayer("mapbox.streets"),
                     // Light: L.tileLayer("mapbox.light"),
                     "Satelliet (Mapbox)": L.tileLayer(
-                        "https://api.mapbox.com/styles/v1/nelenschuurmans/ck8oabi090nys1imfdxgb6nv3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw"
+                        "https://api.mapbox.com/styles/v1/nelenschuurmans/ck8oabi090nys1imfdxgb6nv3/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg"
                     ),
                     "Luchtfoto (PDOK)": L.tileLayer.wms(
                         "https://geodata.nationaalgeoregister.nl/luchtfoto/rgb/wms", {
@@ -32127,7 +34091,7 @@ module.exports = function(context) {
     };
 };
 
-},{}],201:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 require('qs-hash');
 require('../lib/custom_hash.js');
 
@@ -32293,7 +34257,7 @@ function geojsonToLayer(geojson, layer) {
 
 
     function format_url(path, accessToken) {
-        accessToken = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImhkXzhTdXcifQ.3k2-KAxQdyl5bILh_FioCw";
+        accessToken = "pk.eyJ1IjoibmVsZW5zY2h1dXJtYW5zIiwiYSI6ImNrZWlnbHdycjFqNHMyem95cWFqNzhkc3IifQ.ymzd92iqviR5RZ-dd-xRIg";
 
         var url = (document.location.protocol === 'https:') ? "https://a.tiles.mapbox.com/v4" : "http://a.tiles.mapbox.com/v4";
 
@@ -32594,7 +34558,7 @@ function bindPopup(l) {
     });
 }
 
-},{"../../data/maki.json":1,"../lib/custom_hash.js":183,"../lib/popup":185,"escape-html":22,"geojson-rewind":32,"leaflet-geodesy":64,"qs-hash":93}],202:[function(require,module,exports){
+},{"../../data/maki.json":1,"../lib/custom_hash.js":199,"../lib/popup":201,"escape-html":28,"geojson-rewind":41,"leaflet-geodesy":78,"qs-hash":107}],218:[function(require,module,exports){
 module.exports = message;
 
 function message(selection) {
@@ -32635,7 +34599,7 @@ function message(selection) {
     return sel;
 }
 
-},{}],203:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 module.exports = function(selection, blocking) {
 
     var previous = selection.select('div.modal');
@@ -32703,7 +34667,7 @@ module.exports = function(selection, blocking) {
     return shaded;
 };
 
-},{}],204:[function(require,module,exports){
+},{}],220:[function(require,module,exports){
 var table = require('../panel/table'),
     json = require('../panel/json'),
     help = require('../panel/help');
@@ -32755,7 +34719,7 @@ module.exports = function(context, pane) {
     };
 };
 
-},{"../panel/help":190,"../panel/json":191,"../panel/table":192}],205:[function(require,module,exports){
+},{"../panel/help":206,"../panel/json":207,"../panel/table":208}],221:[function(require,module,exports){
 var flash = require('./flash');
 
 module.exports = function(context) {
@@ -32823,7 +34787,7 @@ module.exports = function(context) {
     }
 };
 
-},{"./flash":199}],206:[function(require,module,exports){
+},{"./flash":215}],222:[function(require,module,exports){
 var gist = require('../source/gist'),
     modal = require('./modal');
 
@@ -32872,7 +34836,7 @@ function share(context) {
     };
 }
 
-},{"../source/gist":193,"./modal":203}],207:[function(require,module,exports){
+},{"../source/gist":209,"./modal":219}],223:[function(require,module,exports){
 module.exports = function(context) {
     if (!(/a\.tiles\.mapbox\.com/).test(L.mapbox.config.HTTP_URL) && !require('../config.js')(location.hostname).GithubAPI) {
         return function() {};
@@ -32923,7 +34887,7 @@ module.exports = function(context) {
     };
 };
 
-},{"../config.js":174}],"topojson":[function(require,module,exports){
+},{"../config.js":190}],"topojson":[function(require,module,exports){
 var topojson = module.exports = require("./topojson");
 topojson.topology = require("./lib/topojson/topology");
 topojson.simplify = require("./lib/topojson/simplify");
@@ -32934,4 +34898,4 @@ topojson.bind = require("./lib/topojson/bind");
 topojson.stitch = require("./lib/topojson/stitch");
 topojson.scale = require("./lib/topojson/scale");
 
-},{"./lib/topojson/bind":123,"./lib/topojson/clockwise":126,"./lib/topojson/filter":130,"./lib/topojson/prune":134,"./lib/topojson/scale":136,"./lib/topojson/simplify":137,"./lib/topojson/stitch":139,"./lib/topojson/topology":140,"./topojson":152}]},{},[182]);
+},{"./lib/topojson/bind":137,"./lib/topojson/clockwise":140,"./lib/topojson/filter":144,"./lib/topojson/prune":148,"./lib/topojson/scale":150,"./lib/topojson/simplify":151,"./lib/topojson/stitch":153,"./lib/topojson/topology":154,"./topojson":166}]},{},[198]);
